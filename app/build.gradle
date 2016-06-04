@@ -1,0 +1,27 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion sdk.compileSdk
+    buildToolsVersion sdk.buildTools
+
+    defaultConfig {
+        applicationId 'fr.nicopico.happybirthday'
+        minSdkVersion 19
+        targetSdkVersion sdk.targetSdk
+        versionCode 1
+        versionName '1.0'
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile dep.appcompat
+    compile dep.kotlin
+
+    testCompile testDep.junit
+}
