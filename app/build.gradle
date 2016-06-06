@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion sdk.compileSdk
@@ -21,7 +22,14 @@ android {
 
 dependencies {
     compile dep.appcompat
+    compile project(path: ':common')
+
+    compile dep.dagger
+    kapt dep.dagger_compiler
+    provided dep.jsr250
+    provided dep.jsr305
     compile dep.kotlin
+    compile dep.rxjava
 
     testCompile testDep.junit
 }

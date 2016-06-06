@@ -6,9 +6,7 @@ import fr.nicopico.happybirthday.domain.repository.Repository
 import rx.Observable
 import rx.Single
 
-internal class ContactRepository(
-        context: Context
-) : Repository<Contact> {
+internal class ContactRepository(context: Context) : Repository<Contact> {
 
     init {
         context.contentResolver.apply {

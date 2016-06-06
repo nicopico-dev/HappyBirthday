@@ -21,8 +21,6 @@ android {
 }
 
 dependencies {
-    compile dep.appcompat
-
     compile dep.dagger
     kapt dep.dagger_compiler
     provided dep.jsr250
