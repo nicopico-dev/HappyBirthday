@@ -20,6 +20,10 @@ android {
     }
 }
 
+kapt {
+    generateStubs = true
+}
+
 dependencies {
     compile dep.dagger
     kapt dep.dagger_compiler

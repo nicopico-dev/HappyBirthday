@@ -2,7 +2,7 @@ package fr.nicopico.happybirthday.data.repository
 
 import android.content.Context
 import fr.nicopico.happybirthday.domain.model.Contact
-import fr.nicopico.happybirthday.domain.repository.Repository
+import fr.nicopico.happybirthday.data.repository.Repository
 import rx.Observable
 import rx.Single
 

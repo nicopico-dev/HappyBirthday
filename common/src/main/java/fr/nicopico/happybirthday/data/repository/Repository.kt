@@ -1,4 +1,4 @@
-package fr.nicopico.happybirthday.domain.repository
+package fr.nicopico.happybirthday.data.repository
 
 import fr.nicopico.happybirthday.domain.model.Identifiable
 import rx.Observable
