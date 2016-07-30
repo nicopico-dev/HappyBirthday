@@ -5,8 +5,9 @@ import android.net.Uri
 class Contact(
         override val id: Long,
         val displayName: String,
-        val birthday: Birthday?,
-        val avatar: Uri?
+        val birthday: Birthday? = null,
+        val avatarThumbnail: Uri? = null,
+        val avatarFull: Uri? = null
 ) : Identifiable, Comparable<Contact> {
 
     override fun compareTo(other: Contact): Int {

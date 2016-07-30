@@ -30,6 +30,7 @@ ext {
             rxjava              : 'io.reactivex:rxjava:1.1.8',
             rxjava_debug        : 'io.reactivex:rxjava-debug:1.0.3',
             rxpermissions       : 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar',
+            sqlbrite            : 'com.squareup.sqlbrite:sqlbrite:0.7.0',
             timber              : 'com.jakewharton.timber:timber:4.1.2',
 
             stetho              : "com.facebook.stetho:stetho:$stetho_version",
