@@ -27,6 +27,9 @@ kapt {
 
 dependencies {
     compile dep.appcompat
+    compile dep.support_v4
+    compile dep.recyclerview
+    compile dep.design
     compile project(path: ':common')
 
     compile dep.dagger

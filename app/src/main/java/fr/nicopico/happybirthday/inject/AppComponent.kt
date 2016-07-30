@@ -2,7 +2,7 @@ package fr.nicopico.happybirthday.inject
 
 import android.content.Context
 import dagger.Component
-import fr.nicopico.happybirthday.ui.MainActivity
+import fr.nicopico.happybirthday.ui.home.MainActivity
 import javax.inject.Singleton
 
 @Singleton

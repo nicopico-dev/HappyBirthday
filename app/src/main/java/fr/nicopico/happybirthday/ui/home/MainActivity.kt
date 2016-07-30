@@ -1,10 +1,13 @@
-package fr.nicopico.happybirthday.ui
+package fr.nicopico.happybirthday.ui.home
 
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import fr.nicopico.happybirthday.R
-import fr.nicopico.happybirthday.domain.model.Contact
 import fr.nicopico.happybirthday.data.repository.Repository
+import fr.nicopico.happybirthday.domain.model.Contact
 import fr.nicopico.happybirthday.inject.AppComponent
+import fr.nicopico.happybirthday.ui.BaseActivity
+import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 class MainActivity : BaseActivity() {
@@ -16,7 +19,15 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        assert(contactRepository != null)
+        val contactAdapter = ContactAdapter(this)
+        rvContacts.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = contactAdapter
+        }
+
+        contactRepository.list().toList().subscribe {
+            contactAdapter.data = it
+        }
     }
 
     override fun inject(component: AppComponent) {

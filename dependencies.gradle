@@ -16,7 +16,7 @@ ext {
             cardview            : "com.android.support:cardview-v7:$android_support_version",
             design              : "com.android.support:design:$android_support_version",
             recyclerview        : "com.android.support:recyclerview-v7:$android_support_version",
-            support             : "com.android.support:support-v4:$android_support_version",
+            support_v4          : "com.android.support:support-v4:$android_support_version",
             support_v13         : "com.android.support:support-v13:$android_support_version",
             support_annotations : "com.android.support:support-annotations:$android_support_version",
 

@@ -23,11 +23,6 @@ internal class ContactRepository(
         private val context: Context
 ) : Repository<Contact> {
 
-    private val contentResolver: BriteContentResolver by lazy {
-        SqlBrite.create()
-                .wrapContentProvider(context.contentResolver, Schedulers.io())
-    }
-
     companion object {
         private val PROJECTION = arrayOf(
                 CONTACT_ID,
@@ -43,6 +38,11 @@ internal class ContactRepository(
                     avatarThumbnail = cursor.stringValue(PHOTO_THUMBNAIL_URI).asUri(),
                     avatarFull = cursor.stringValue(PHOTO_URI).asUri())
         }
+    }
+
+    private val contentResolver: BriteContentResolver by lazy {
+        SqlBrite.create()
+                .wrapContentProvider(context.contentResolver, Schedulers.io())
     }
 
     override fun get(id: Long): Single<Contact> = ensurePermission {
