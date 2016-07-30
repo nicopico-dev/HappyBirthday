@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId 'fr.nicopico.happybirthday'
-        minSdkVersion 19
+        minSdkVersion sdk.minSdk
         targetSdkVersion sdk.targetSdk
         versionCode 1
         versionName '1.0'
