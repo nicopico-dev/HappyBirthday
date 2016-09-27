@@ -21,4 +21,9 @@ class Contact(
             else -> birthdayCompare
         }
     }
+
+    override fun toString(): String {
+        return "Contact(id=$id, birthday=$birthday, displayName='$displayName', avatarFull=$avatarFull, avatarThumbnail=$avatarThumbnail)"
+    }
+
 }

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import fr.nicopico.happybirthday.R
 import fr.nicopico.happybirthday.data.repository.Repository
 import fr.nicopico.happybirthday.domain.model.Contact
@@ -19,13 +18,13 @@ class MainActivity : BaseActivity() {
 
     @Inject
     lateinit var contactRepository: Repository<Contact>
-    private var subscription: rx.Subscription? = null
+    lateinit private var contactAdapter: ContactAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val contactAdapter = ContactAdapter(this)
+        contactAdapter = ContactAdapter(this)
         rvContacts.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = contactAdapter
@@ -49,31 +48,16 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    override fun onDestroy() {
-        subscription?.unsubscribe()
-        super.onDestroy()
-    }
-
     override fun inject(component: AppComponent) {
         component.inject(this)
     }
 
     private fun loadContacts() {
-        subscription = contactRepository.list()
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .toList()
-                .subscribe(object : rx.Observer<List<Contact>> {
-                    override fun onNext(t: List<Contact>) {
-                        (rvContacts.adapter as ContactAdapter).data = t
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Timber.e(e, "Unable to retrieve contact")
-                    }
-
-                    override fun onCompleted() {
-                        Toast.makeText(this@MainActivity, "OK", Toast.LENGTH_SHORT).show()
-                    }
-                })
+        contactRepository.list()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { contactAdapter.data = it },
+                        { Timber.e(it, "Unable to retrieve contact") }
+                )
     }
 }

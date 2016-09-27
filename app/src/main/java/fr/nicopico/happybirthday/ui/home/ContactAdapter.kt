@@ -19,6 +19,7 @@ class ContactAdapter(context: Context) : RecyclerView.Adapter<ContactAdapter.Vie
 
     var data: List<Contact>? = null
         set(value) {
+            field = value
             notifyDataSetChanged()
         }
 

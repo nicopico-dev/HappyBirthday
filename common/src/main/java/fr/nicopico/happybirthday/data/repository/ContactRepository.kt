@@ -38,7 +38,8 @@ internal class ContactRepository(
                     id = cursor.longValue(CONTACT_ID)!!,
                     displayName = cursor.stringValue(DISPLAY_NAME)!!,
                     avatarThumbnail = cursor.stringValue(PHOTO_THUMBNAIL_URI)?.asUri(),
-                    avatarFull = cursor.stringValue(PHOTO_URI)?.asUri())
+                    avatarFull = cursor.stringValue(PHOTO_URI)?.asUri()
+            )
         }
     }
 
@@ -56,11 +57,12 @@ internal class ContactRepository(
                         "$CONTACT_ID = ?",
                         arrayOf(id.toString()),
                         null,
-                        false)
+                        false
+                )
                 .mapToOne(MAPPER)
     }.toSingle()
 
-    override fun list(): Observable<Contact> = ensurePermission {
+    override fun list(filter: (Contact) -> Boolean): Observable<List<Contact>> = ensurePermission {
         contentResolver
                 .createQuery(
                         ContactsContract.Data.CONTENT_URI,
@@ -68,11 +70,14 @@ internal class ContactRepository(
                         null,
                         null,
                         null,
-                        false)
-                .flatMap { it.asRows(MAPPER) }
+                        false
+                )
+                .flatMap {
+                    q -> q.asRows(MAPPER).filter(filter).toList()
+                }
     }
 
-    private inline fun ensurePermission(crossinline action: () -> Observable<Contact>): Observable<Contact> {
+    private inline fun <T> ensurePermission(crossinline action: () -> Observable<T>): Observable<T> {
         return RxPermissions
                 .getInstance(context)
                 .request(Manifest.permission.READ_CONTACTS)
