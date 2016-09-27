@@ -1,14 +1,14 @@
-def android_support_version = '23.4.0'
-def butterknife_version = '8.2.1'
-def dagger_version = '2.5'
-def stetho_version = '1.3.1'
+def android_support_version = '24.2.1'
+def butterknife_version = '8.4.0'
+def dagger_version = '2.7'
+def stetho_version = '1.4.1'
 
 ext {
     sdk = [
-            compileSdk: 23,
+            compileSdk: 24,
             minSdk : 19,
             targetSdk : 23,
-            buildTools: '24.0.1'
+            buildTools: '24.0.2'
     ]
 
     dep = [
@@ -27,15 +27,15 @@ ext {
             jsr250              : 'javax.annotation:jsr250-api:1.0',   // Marker annotations
             jsr305              : 'com.google.code.findbugs:jsr305:3.0.0',   // Nullable
             rxandroid           : 'io.reactivex:rxandroid:1.2.1',
-            rxjava              : 'io.reactivex:rxjava:1.1.8',
+            rxjava              : 'io.reactivex:rxjava:1.2.0',
             rxjava_debug        : 'io.reactivex:rxjava-debug:1.0.3',
             rxpermissions       : 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar',
             sqlbrite            : 'com.squareup.sqlbrite:sqlbrite:0.7.0',
-            timber              : 'com.jakewharton.timber:timber:4.1.2',
+            timber              : 'com.jakewharton.timber:timber:4.3.1',
 
             stetho              : "com.facebook.stetho:stetho:$stetho_version",
             stetho_okhttp3      : "com.facebook.stetho:stetho-okhttp3:$stetho_version",
-            leakcanary          : 'com.squareup.leakcanary:leakcanary-android:1.4-beta2',
+            leakcanary          : 'com.squareup.leakcanary:leakcanary-android:1.4',
 
             kotlin              : "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     ]
@@ -45,7 +45,6 @@ ext {
             junit        : 'junit:junit:4.12',
             mockito      : 'org.mockito:mockito-core:1.10.19',
             mockitoKotlin: 'com.nhaarman:mockito-kotlin:0.4.0',
-            robolectric  : 'org.robolectric:robolectric:3.1',
-            testRunner   : 'com.android.support.test:runner:0.4',
+            robolectric  : 'org.robolectric:robolectric:3.1.2',
     ]
 }
