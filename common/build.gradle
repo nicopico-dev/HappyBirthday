@@ -33,6 +33,7 @@ dependencies {
     compile dep.rxjava
     compile dep.rxpermissions
     compile dep.sqlbrite
+    compile dep.timber
 
     testCompile testDep.junit
 }

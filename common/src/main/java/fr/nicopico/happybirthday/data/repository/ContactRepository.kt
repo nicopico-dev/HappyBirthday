@@ -20,7 +20,9 @@ import rx.Single
 import rx.schedulers.Schedulers
 
 internal class ContactRepository(
-        private val context: Context
+        private val context: Context,
+        private val sqlBrite: SqlBrite,
+        debug: Boolean = false
 ) : Repository<Contact> {
 
     companion object {
@@ -33,22 +35,23 @@ internal class ContactRepository(
 
         private val MAPPER = { cursor: Cursor ->
             Contact(
-                    id = cursor.longValue(CONTACT_ID),
-                    displayName = cursor.stringValue(DISPLAY_NAME),
-                    avatarThumbnail = cursor.stringValue(PHOTO_THUMBNAIL_URI).asUri(),
-                    avatarFull = cursor.stringValue(PHOTO_URI).asUri())
+                    id = cursor.longValue(CONTACT_ID)!!,
+                    displayName = cursor.stringValue(DISPLAY_NAME)!!,
+                    avatarThumbnail = cursor.stringValue(PHOTO_THUMBNAIL_URI)?.asUri(),
+                    avatarFull = cursor.stringValue(PHOTO_URI)?.asUri())
         }
     }
 
     private val contentResolver: BriteContentResolver by lazy {
-        SqlBrite.create()
-                .wrapContentProvider(context.contentResolver, Schedulers.io())
+        sqlBrite.wrapContentProvider(context.contentResolver, Schedulers.io()).apply {
+            setLoggingEnabled(debug)
+        }
     }
 
     override fun get(id: Long): Single<Contact> = ensurePermission {
         contentResolver
                 .createQuery(
-                        ContactsContract.AUTHORITY_URI,
+                        ContactsContract.Data.CONTENT_URI,
                         PROJECTION,
                         "$CONTACT_ID = ?",
                         arrayOf(id.toString()),
@@ -60,7 +63,7 @@ internal class ContactRepository(
     override fun list(): Observable<Contact> = ensurePermission {
         contentResolver
                 .createQuery(
-                        ContactsContract.AUTHORITY_URI,
+                        ContactsContract.Data.CONTENT_URI,
                         PROJECTION,
                         null,
                         null,
