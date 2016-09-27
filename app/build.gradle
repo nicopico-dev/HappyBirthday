@@ -27,18 +27,21 @@ kapt {
 }
 
 dependencies {
+    compile project(path: ':common')
+
     compile dep.appcompat
     compile dep.support_v4
     compile dep.recyclerview
     compile dep.design
-    compile project(path: ':common')
 
     compile dep.dagger
     kapt dep.dagger_compiler
     provided dep.jsr250
     provided dep.jsr305
     compile dep.kotlin
+    compile dep.rxandroid
     compile dep.rxjava
+    compile dep.timber
 
     testCompile testDep.junit
 }
