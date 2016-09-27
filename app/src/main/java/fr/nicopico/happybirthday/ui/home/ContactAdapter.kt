@@ -23,7 +23,7 @@ class ContactAdapter(context: Context) : RecyclerView.Adapter<ContactAdapter.Vie
         }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
-        return inflater.inflate(R.layout.item_contact, parent, false).let { ViewHolder(it) }
+        return inflater.inflate(R.layout.item_contact, parent, false).let(::ViewHolder)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
