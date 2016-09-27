@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import fr.nicopico.happybirthday.R
 import fr.nicopico.happybirthday.data.repository.Repository
 import fr.nicopico.happybirthday.domain.model.Contact
@@ -54,9 +55,13 @@ class MainActivity : BaseActivity() {
 
     private fun loadContacts() {
         contactRepository.list()
+                .doOnSubscribe { progressBar.visibility = View.VISIBLE }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { contactAdapter.data = it },
+                        {
+                            contactAdapter.data = it
+                            progressBar.visibility = View.GONE
+                        },
                         { Timber.e(it, "Unable to retrieve contact") }
                 )
     }

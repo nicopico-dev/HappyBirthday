@@ -4,14 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:columnCount="2"
+    android:columnCount="3"
     android:rowCount="2"
     android:padding="@dimen/space_small">
 
     <ImageView
         android:id="@+id/imgAvatar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/avatar_thumbnail"
+        android:layout_height="@dimen/avatar_thumbnail"
+        android:layout_rowSpan="2"
+        android:layout_gravity="center_vertical"
+        android:scaleType="centerCrop"
+        tools:ignore="ContentDescription"
+        tools:background="#00F"/>
+
+    <android.support.v4.widget.Space
+        android:layout_width="@dimen/space_small"
         android:layout_rowSpan="2"/>
 
     <TextView
@@ -26,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        tools:text="10 juin 1980"/>
+        tools:text="10 juin 1980"
+        tools:visibility="visible"/>
 
 </GridLayout>
