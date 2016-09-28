@@ -16,7 +16,6 @@ import fr.nicopico.happybirthday.extensions.asUri
 import fr.nicopico.happybirthday.extensions.longValue
 import fr.nicopico.happybirthday.extensions.stringValue
 import rx.Observable
-import rx.Single
 import rx.schedulers.Schedulers
 
 internal class ContactRepository(
@@ -49,7 +48,7 @@ internal class ContactRepository(
         }
     }
 
-    override fun get(id: Long): Single<Contact> = ensurePermission {
+    override fun get(id: Long): Observable<Contact> = ensurePermission {
         contentResolver
                 .createQuery(
                         ContactsContract.Data.CONTENT_URI,
@@ -60,7 +59,7 @@ internal class ContactRepository(
                         false
                 )
                 .mapToOne(MAPPER)
-    }.toSingle()
+    }
 
     override fun list(filter: (Contact) -> Boolean): Observable<List<Contact>> = ensurePermission {
         contentResolver
