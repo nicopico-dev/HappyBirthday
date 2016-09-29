@@ -3,14 +3,14 @@ package fr.nicopico.happybirthday.data.repository
 import android.Manifest
 import android.content.Context
 import android.database.Cursor
-import android.provider.ContactsContract
-import android.provider.ContactsContract.CommonDataKinds.Photo.PHOTO_THUMBNAIL_URI
-import android.provider.ContactsContract.CommonDataKinds.Photo.PHOTO_URI
-import android.provider.ContactsContract.Data.CONTACT_ID
-import android.provider.ContactsContract.Data.DISPLAY_NAME
+import android.provider.ContactsContract.CommonDataKinds.Event
+import android.provider.ContactsContract.Contacts.Photo
+import android.provider.ContactsContract.Data
 import com.squareup.sqlbrite.BriteContentResolver
+import com.squareup.sqlbrite.QueryObservable
 import com.squareup.sqlbrite.SqlBrite
 import com.tbruyelle.rxpermissions.RxPermissions
+import fr.nicopico.happybirthday.domain.model.Birthday
 import fr.nicopico.happybirthday.domain.model.Contact
 import fr.nicopico.happybirthday.extensions.asUri
 import fr.nicopico.happybirthday.extensions.longValue
@@ -24,22 +24,13 @@ internal class ContactRepository(
         debug: Boolean = false
 ) : Repository<Contact> {
 
-    companion object {
-        private val PROJECTION = arrayOf(
-                CONTACT_ID,
-                DISPLAY_NAME,
-                PHOTO_THUMBNAIL_URI,
-                PHOTO_URI
-        )
+    private data class ContactBirthday(val contactId: Long, val birthday: Birthday?)
 
-        private val MAPPER = { cursor: Cursor ->
-            Contact(
-                    id = cursor.longValue(CONTACT_ID)!!,
-                    displayName = cursor.stringValue(DISPLAY_NAME)!!,
-                    avatarThumbnail = cursor.stringValue(PHOTO_THUMBNAIL_URI)?.asUri(),
-                    avatarFull = cursor.stringValue(PHOTO_URI)?.asUri()
-            )
-        }
+    private val eventMapper = { cursor: Cursor ->
+        ContactBirthday(
+                contactId = cursor.longValue(Data.CONTACT_ID)!!,
+                birthday = cursor.stringValue(Event.START_DATE)?.toBirthday()
+        )
     }
 
     private val contentResolver: BriteContentResolver by lazy {
@@ -49,30 +40,18 @@ internal class ContactRepository(
     }
 
     override fun get(id: Long): Observable<Contact> = ensurePermission {
-        contentResolver
-                .createQuery(
-                        ContactsContract.Data.CONTENT_URI,
-                        PROJECTION,
-                        "$CONTACT_ID = ?",
-                        arrayOf(id.toString()),
-                        null,
-                        false
-                )
-                .mapToOne(MAPPER)
+        getBirthdayQuery(id)
+                .mapToOne(eventMapper)
+                .flatMap { getContactInfo(it.contactId, it.birthday) }
     }
 
     override fun list(filter: (Contact) -> Boolean): Observable<List<Contact>> = ensurePermission {
-        contentResolver
-                .createQuery(
-                        ContactsContract.Data.CONTENT_URI,
-                        PROJECTION,
-                        null,
-                        null,
-                        null,
-                        false
-                )
+        getBirthdayQuery()
                 .flatMap {
-                    q -> q.asRows(MAPPER).filter(filter).toList()
+                    it.asRows(eventMapper)
+                            .flatMap { getContactInfo(it.contactId, it.birthday) }
+                            .filter(filter)
+                            .toList()
                 }
     }
 
@@ -83,8 +62,72 @@ internal class ContactRepository(
                 .switchMap { granted ->
                     when {
                         granted -> action()
-                        else    -> Observable.empty()
+                        else -> Observable.empty()
                     }
                 }
     }
+
+    private fun getBirthdayQuery(contactId: Long? = null): QueryObservable {
+        return contentResolver.createQuery(
+                Data.CONTENT_URI,
+                arrayOf(Data.CONTACT_ID, Event.START_DATE),
+                "${Data.MIMETYPE} = ? and ${Event.TYPE} = ?".let {
+                    when (contactId) {
+                        null -> it
+                        else -> it.plus(" ${Data.CONTACT_ID} = ?")
+                    }
+                },
+                arrayOf(Event.CONTENT_ITEM_TYPE, Event.TYPE_BIRTHDAY.toString()).let {
+                    when (contactId) {
+                        null -> it
+                        else -> it.plus(contactId.toString())
+                    }
+                },
+                null,
+                false
+        )
+    }
+
+    private fun getContactInfo(contactId: Long, birthday: Birthday?): Observable<Contact> {
+        return contentResolver
+                .createQuery(
+                        Data.CONTENT_URI,
+                        arrayOf(
+                                Data.CONTACT_ID,
+                                Data.DISPLAY_NAME,
+                                Photo.PHOTO_THUMBNAIL_URI,
+                                Photo.PHOTO_URI
+                        ),
+                        "${Data.CONTACT_ID} = ?",
+                        arrayOf(contactId.toString()),
+                        null,
+                        false
+                )
+                .mapToOne({ cursor: Cursor ->
+                    Contact(
+                            id = cursor.longValue(Data.CONTACT_ID)!!,
+                            displayName = cursor.stringValue(Data.DISPLAY_NAME)!!,
+                            birthday = birthday,
+                            avatarThumbnail = cursor.stringValue(Photo.PHOTO_THUMBNAIL_URI)?.asUri(),
+                            avatarFull = cursor.stringValue(Photo.PHOTO_URI)?.asUri()
+                    )
+                })
+                .take(1)
+    }
+}
+
+private val regexDate = Regex("(\\d{4}|-)-(\\d{2})-(\\d{2})", RegexOption.COMMENTS)
+
+private fun String.toBirthday(): Birthday? {
+    val matchResult = regexDate.matchEntire(this)
+    val (yearS, monthS, dayS) = matchResult!!.destructured
+
+    val day = dayS.toInt()
+    val month = monthS.toInt()
+    val year: Int? = when (yearS) {
+        "-" -> null
+        else -> this.toInt()
+    }
+
+    return Birthday(day, month, year)
 }
