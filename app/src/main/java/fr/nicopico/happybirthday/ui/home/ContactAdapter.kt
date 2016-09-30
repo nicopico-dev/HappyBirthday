@@ -37,7 +37,17 @@ class ContactAdapter(context: Context) : RecyclerView.Adapter<ContactAdapter.Vie
         fun bind(contact: Contact) {
             itemView.imgAvatar.setImageURI(contact.avatarThumbnail)
             itemView.txtName.text = contact.displayName
-            itemView.txtInfos.visibility = View.GONE
+
+            with(itemView.txtInfos) {
+                val birthday = contact.birthday
+                if (birthday == null) {
+                    visibility = View.GONE
+                }
+                else {
+                    visibility = View.VISIBLE
+                    text = birthday.format("%te %tB")
+                }
+            }
         }
     }
 }
