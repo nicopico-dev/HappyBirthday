@@ -6,8 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import fr.nicopico.happybirthday.R
-import fr.nicopico.happybirthday.data.repository.Repository
-import fr.nicopico.happybirthday.domain.model.Contact
+import fr.nicopico.happybirthday.data.repository.ContactRepository
 import fr.nicopico.happybirthday.extensions.ifElse
 import fr.nicopico.happybirthday.inject.AppComponent
 import fr.nicopico.happybirthday.ui.BaseActivity
@@ -21,7 +20,7 @@ import javax.inject.Inject
 class MainActivity : BaseActivity() {
 
     @Inject
-    lateinit var contactRepository: Repository<Contact>
+    lateinit var contactRepository: ContactRepository
     lateinit private var contactAdapter: ContactAdapter
 
     private var subscription: Subscription? = null
