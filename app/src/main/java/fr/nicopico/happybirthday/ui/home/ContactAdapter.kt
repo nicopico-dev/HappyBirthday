@@ -46,6 +46,11 @@ class ContactAdapter(context: Context) : RecyclerView.Adapter<ContactAdapter.Vie
                 else {
                     visibility = View.VISIBLE
                     text = birthday.format("%te %tB")
+
+                    val age = contact.getAge()
+                    if (age != null) {
+                        append(" - $age ans")
+                    }
                 }
             }
         }

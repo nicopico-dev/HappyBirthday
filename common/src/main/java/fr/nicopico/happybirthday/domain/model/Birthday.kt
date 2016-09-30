@@ -36,14 +36,7 @@ class Birthday(
         return String.format(Locale.getDefault(), format, *args)
     }
 
-    fun age(reference: Date = Date()): Int? {
-        if (year == null) {
-            return null
-        }
-        else {
-            TODO()
-        }
-    }
+    fun withYear(pYear: Int) = Birthday(day = day, month = month, year = pYear)
 
     override fun toString(): String {
         return "$day/$month/${year ?: '?'}"
