@@ -112,5 +112,5 @@ private fun String.toBirthday(): Birthday? {
         else -> yearS.toInt()
     }
 
-    return Birthday(day, month, year)
+    return Birthday(year, month, day)
 }

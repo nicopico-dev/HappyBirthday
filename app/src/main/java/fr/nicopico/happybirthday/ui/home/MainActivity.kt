@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import fr.nicopico.happybirthday.R
 import fr.nicopico.happybirthday.data.repository.ContactRepository
+import fr.nicopico.happybirthday.domain.model.nextBirthdaySorter
 import fr.nicopico.happybirthday.extensions.ifElse
 import fr.nicopico.happybirthday.inject.AppComponent
 import fr.nicopico.happybirthday.ui.BaseActivity
@@ -64,7 +65,8 @@ class MainActivity : BaseActivity() {
 
     private fun loadContacts(delay: Boolean = false) {
         subscription?.unsubscribe()
-        subscription = contactRepository.list()
+        subscription = contactRepository
+                .list(sorter = nextBirthdaySorter())
                 .observeOn(AndroidSchedulers.mainThread())
                 .ifElse(delay, ifTrue = {
                     delay(1, TimeUnit.SECONDS)

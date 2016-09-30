@@ -3,9 +3,9 @@ package fr.nicopico.happybirthday.domain.model
 import java.util.*
 
 class Birthday(
-        val day: Int,
+        val year: Int?,
         val month: Int,
-        val year: Int?
+        val day: Int
 ) : Comparable<Birthday> {
 
     companion object {
@@ -34,6 +34,15 @@ class Birthday(
             }
         }
         return String.format(Locale.getDefault(), format, *args)
+    }
+
+    fun age(reference: Date = Date()): Int? {
+        if (year == null) {
+            return null
+        }
+        else {
+            TODO()
+        }
     }
 
     override fun toString(): String {
