@@ -8,11 +8,13 @@ import android.view.View
 import fr.nicopico.happybirthday.R
 import fr.nicopico.happybirthday.data.repository.Repository
 import fr.nicopico.happybirthday.domain.model.Contact
+import fr.nicopico.happybirthday.extensions.ifElse
 import fr.nicopico.happybirthday.inject.AppComponent
 import fr.nicopico.happybirthday.ui.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainActivity : BaseActivity() {
@@ -41,7 +43,7 @@ class MainActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_reload) {
-            loadContacts()
+            loadContacts(delay = true)
             return true
         }
         else {
@@ -53,10 +55,13 @@ class MainActivity : BaseActivity() {
         component.inject(this)
     }
 
-    private fun loadContacts() {
+    private fun loadContacts(delay: Boolean = false) {
         contactRepository.list()
                 .doOnSubscribe { progressBar.visibility = View.VISIBLE }
                 .observeOn(AndroidSchedulers.mainThread())
+                .ifElse(delay, ifTrue = {
+                    delay(1, TimeUnit.SECONDS)
+                })
                 .subscribe(
                         {
                             contactAdapter.data = it
