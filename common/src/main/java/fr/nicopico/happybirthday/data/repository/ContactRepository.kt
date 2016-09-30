@@ -126,7 +126,7 @@ private fun String.toBirthday(): Birthday? {
     val month = monthS.toInt()
     val year: Int? = when (yearS) {
         "-" -> null
-        else -> this.toInt()
+        else -> yearS.toInt()
     }
 
     return Birthday(day, month, year)

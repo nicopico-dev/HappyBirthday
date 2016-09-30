@@ -12,6 +12,7 @@ import fr.nicopico.happybirthday.extensions.ifElse
 import fr.nicopico.happybirthday.inject.AppComponent
 import fr.nicopico.happybirthday.ui.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -22,6 +23,8 @@ class MainActivity : BaseActivity() {
     @Inject
     lateinit var contactRepository: Repository<Contact>
     lateinit private var contactAdapter: ContactAdapter
+
+    private var subscription: Subscription? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +37,11 @@ class MainActivity : BaseActivity() {
         }
 
         loadContacts()
+    }
+
+    override fun onDestroy() {
+        subscription?.unsubscribe()
+        super.onDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -56,17 +64,16 @@ class MainActivity : BaseActivity() {
     }
 
     private fun loadContacts(delay: Boolean = false) {
-        contactRepository.list()
-                .doOnSubscribe { progressBar.visibility = View.VISIBLE }
+        subscription?.unsubscribe()
+        subscription = contactRepository.list()
                 .observeOn(AndroidSchedulers.mainThread())
                 .ifElse(delay, ifTrue = {
                     delay(1, TimeUnit.SECONDS)
                 })
+                .doOnSubscribe { progressBar.visibility = View.VISIBLE }
+                .doOnNext { progressBar.visibility = View.GONE }
                 .subscribe(
-                        {
-                            contactAdapter.data = it
-                            progressBar.visibility = View.GONE
-                        },
+                        { contactAdapter.data = it },
                         { Timber.e(it, "Unable to retrieve contact") }
                 )
     }
