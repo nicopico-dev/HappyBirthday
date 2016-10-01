@@ -48,6 +48,11 @@ class BirthdayTest {
     }
 
     @Test
+    fun leapYear() {
+        TODO("Check birthday on leap year")
+    }
+
+    @Test
     fun format() {
         val b = Birthday(1, 20)
         Locale.setDefault(Locale.US)

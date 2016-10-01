@@ -6,6 +6,7 @@ import java.util.*
 
 class Contact(
         override val id: Long,
+        val lookupKey: String,
         val displayName: String,
         val birthday: Birthday? = null,
         val avatarThumbnail: Uri? = null,

@@ -77,6 +77,7 @@ internal class AndroidContactRepository(
                         Data.CONTENT_URI,
                         arrayOf(
                                 Data.CONTACT_ID,
+                                Data.LOOKUP_KEY,
                                 Data.DISPLAY_NAME,
                                 Photo.PHOTO_THUMBNAIL_URI,
                                 Photo.PHOTO_URI
@@ -89,6 +90,7 @@ internal class AndroidContactRepository(
                 .mapToOne({ cursor: Cursor ->
                     Contact(
                             id = cursor.longValue(Data.CONTACT_ID)!!,
+                            lookupKey = cursor.stringValue(Data.LOOKUP_KEY)!!,
                             displayName = cursor.stringValue(Data.DISPLAY_NAME)!!,
                             birthday = birthday,
                             avatarThumbnail = cursor.stringValue(Photo.PHOTO_THUMBNAIL_URI)?.asUri(),

@@ -1,0 +1,43 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+Properties props = new Properties()
+def propertyFile = new File(project.projectDir, 'local.properties')
+props.load(new FileInputStream(propertyFile))
+
+android {
+    compileSdkVersion sdk.compileSdk
+    buildToolsVersion sdk.buildTools
+
+    defaultConfig {
+        applicationId 'fr.nicopico.dashclock.birthday'
+        minSdkVersion sdk.minSdk
+        targetSdkVersion sdk.targetSdk
+        versionCode 11
+        versionName '1.6.0'
+    }
+
+    signingConfigs {
+        release {
+            storeFile file(props.keystorePath)
+            storePassword props.keystorePassword
+            keyAlias props.keystoreKeyAlias
+            keyPassword props.keystoreKeyPassword
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
+            proguardFiles 'proguard-project.txt'
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+dependencies {
+    compile project(':common')
+    compile 'com.google.android.apps.dashclock:dashclock-api:2.0.0'
+}

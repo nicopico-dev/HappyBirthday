@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+    <EditTextPreference
+        android:key="pref_days_limit"
+        android:title="@string/pref_days_limit_title"
+        android:defaultValue="@string/pref_days_limit_default"
+        android:selectAllOnFocus="true"
+        android:inputType="number"
+        android:singleLine="true"
+        android:maxLines="1"/>
+
+    <CheckBoxPreference
+        android:key="pref_show_quickcontact"
+        android:title="@string/pref_show_quickcontact"
+        android:defaultValue="true"
+        android:summaryOn="@string/pref_show_quickcontact_on"
+        android:summaryOff="@string/pref_show_quickcontact_off"/>
+
+    <CheckBoxPreference
+        android:key="pref_disable_localization"
+        android:title="@string/pref_disable_localization"
+        android:defaultValue="false"
+        android:summaryOn="@string/pref_disable_localization_on"
+        android:summaryOff="@string/pref_disable_localization_off"/>
+
+    <ListPreference
+        android:key="pref_contact_group"
+        android:title="@string/pref_contact_group"
+        android:defaultValue="NO_CONTACT_GROUP_SELECTED"/>
+
+</PreferenceScreen>
