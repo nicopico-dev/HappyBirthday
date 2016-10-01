@@ -44,7 +44,7 @@ internal class AndroidContactRepository(
                                     )
                                 }
                                 .filter { it.birthday?.let(filter) ?: false }
-                                .flatMap { getContactInfo(it.contactId, it.birthday) }
+                                .flatMap { getContactInfo(it.contactId, it.birthday!!) }
                                 .toSortedList(sorter)
                     }
         }
@@ -71,7 +71,7 @@ internal class AndroidContactRepository(
         )
     }
 
-    private fun getContactInfo(contactId: Long, birthday: Birthday?): Observable<Contact> {
+    private fun getContactInfo(contactId: Long, birthday: Birthday): Observable<Contact> {
         return contentResolver
                 .createQuery(
                         Data.CONTENT_URI,
@@ -103,7 +103,7 @@ internal class AndroidContactRepository(
 
 private val regexDate = Regex("(\\d{4}|-)-(\\d{2})-(\\d{2})", RegexOption.COMMENTS)
 
-private fun String.toBirthday(): Birthday? {
+private fun String.toBirthday(): Birthday {
     val matchResult = regexDate.matchEntire(this)
     val (yearS, monthS, dayS) = matchResult!!.destructured
 

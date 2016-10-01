@@ -8,13 +8,13 @@ class Contact(
         override val id: Long,
         val lookupKey: String,
         val displayName: String,
-        val birthday: Birthday? = null,
+        val birthday: Birthday,
         val avatarThumbnail: Uri? = null,
         val avatarFull: Uri? = null
 ) : Identifiable, Comparable<Contact> {
 
     fun getAge(reference: Calendar = GregorianCalendar.getInstance()): Int? {
-        if (birthday == null || birthday.year == null) {
+        if (birthday.year == null) {
             return null
         }
         else {
@@ -29,11 +29,7 @@ class Contact(
     }
 
     override fun compareTo(other: Contact): Int {
-        val birthdayCompare = when (other.birthday) {
-            null -> -1
-            else -> birthday?.compareTo(other.birthday) ?: 1
-        }
-
+        val birthdayCompare = birthday.compareTo(other.birthday)
         return when (birthdayCompare) {
             0    -> displayName.compareTo(other.displayName)
             else -> birthdayCompare
@@ -52,18 +48,13 @@ fun nextBirthdaySorter(): (Contact, Contact) -> Int {
         val b1 = c1.birthday
         val b2 = c2.birthday
 
-        if (b1 == null || b2 == null) {
+        val refVersusB1 = reference.compareTo(b1)
+        val refVersusB2 = reference.compareTo(b2)
+        if (refVersusB1 == refVersusB2) {
             c1.compareTo(c2)
         }
         else {
-            val refVersusB1 = reference.compareTo(b1)
-            val refVersusB2 = reference.compareTo(b2)
-            if (refVersusB1 == refVersusB2) {
-                c1.compareTo(c2)
-            }
-            else {
-                refVersusB1 - refVersusB2
-            }
+            refVersusB1 - refVersusB2
         }
     }
 }
