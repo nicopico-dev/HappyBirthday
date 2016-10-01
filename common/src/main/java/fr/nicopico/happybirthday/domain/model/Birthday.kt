@@ -1,5 +1,6 @@
 package fr.nicopico.happybirthday.domain.model
 
+import fr.nicopico.happybirthday.extensions.today
 import java.util.*
 
 class Birthday(
@@ -14,7 +15,11 @@ class Birthday(
 
     @Suppress("DEPRECATION")
     private val date by lazy {
-        Date(year ?: 1970, month - 1, day)
+        Date((year ?: 1900) - 1900, month - 1, day)
+    }
+
+    private val timestamp by lazy {
+        date.time
     }
 
     init {
@@ -29,7 +34,7 @@ class Birthday(
     fun format(format: String): String {
         val count = regex.findAll(format).let { it.count() }
         val args = kotlin.arrayOfNulls<Date>(count).apply {
-            for (i in 0..count-1) {
+            for (i in 0..count - 1) {
                 this[i] = date
             }
         }
@@ -37,6 +42,19 @@ class Birthday(
     }
 
     fun withYear(pYear: Int) = Birthday(day = day, month = month, year = pYear)
+
+    fun inDays(reference: Calendar = today()): Long {
+        val yearBirthday = withYear(reference.get(Calendar.YEAR))
+
+        val referenceTime: Long = reference.timeInMillis
+        val birthdayTime: Long = when (referenceTime <= yearBirthday.timestamp) {
+            true -> yearBirthday.timestamp
+            false -> yearBirthday.withYear(yearBirthday.year!! + 1).timestamp
+        }
+
+        val delta: Long = birthdayTime - referenceTime
+        return delta / (1000 * 60 * 60 * 24)
+    }
 
     override fun toString(): String {
         return "$day/$month/${year ?: '?'}"
@@ -51,9 +69,3 @@ class Birthday(
         }
     }
 }
-
-fun Calendar.toBirthday() = Birthday(
-        year = get(Calendar.YEAR),
-        month = get(Calendar.MONTH) + 1,
-        day = get(Calendar.DAY_OF_MONTH)
-)

@@ -1,6 +1,7 @@
 package fr.nicopico.happybirthday.domain.model
 
 import android.net.Uri
+import fr.nicopico.happybirthday.extensions.toBirthday
 import java.util.*
 
 class Contact(
