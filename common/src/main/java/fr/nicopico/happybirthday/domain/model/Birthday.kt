@@ -14,7 +14,7 @@ class Birthday(
 
     @Suppress("DEPRECATION")
     private val date by lazy {
-        Date(year ?: 1970, month, day)
+        Date(year ?: 1970, month - 1, day)
     }
 
     init {
@@ -51,3 +51,9 @@ class Birthday(
         }
     }
 }
+
+fun Calendar.toBirthday() = Birthday(
+        year = get(Calendar.YEAR),
+        month = get(Calendar.MONTH) + 1,
+        day = get(Calendar.DAY_OF_MONTH)
+)

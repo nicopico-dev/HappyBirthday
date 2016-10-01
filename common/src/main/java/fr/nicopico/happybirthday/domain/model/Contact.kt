@@ -65,9 +65,3 @@ fun nextBirthdaySorter(): (Contact, Contact) -> Int {
         }
     }
 }
-
-fun Calendar.toBirthday() = Birthday(
-        year = get(Calendar.YEAR),
-        month = get(Calendar.MONTH) + 1,
-        day = get(Calendar.DAY_OF_MONTH)
-)
