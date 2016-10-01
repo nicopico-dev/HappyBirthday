@@ -9,6 +9,7 @@ import fr.nicopico.happybirthday.R
 import fr.nicopico.happybirthday.data.repository.ContactRepository
 import fr.nicopico.happybirthday.domain.model.nextBirthdaySorter
 import fr.nicopico.happybirthday.extensions.ifElse
+import fr.nicopico.happybirthday.extensions.toast
 import fr.nicopico.happybirthday.inject.AppComponent
 import fr.nicopico.happybirthday.ui.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -67,15 +68,21 @@ class MainActivity : BaseActivity() {
         subscription?.unsubscribe()
         subscription = contactRepository
                 .list(sorter = nextBirthdaySorter())
-                .observeOn(AndroidSchedulers.mainThread())
                 .ifElse(delay, ifTrue = {
                     delay(1, TimeUnit.SECONDS)
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { progressBar.visibility = View.VISIBLE }
-                .doOnNext { progressBar.visibility = View.GONE }
                 .subscribe(
-                        { contactAdapter.data = it },
-                        { Timber.e(it, "Unable to retrieve contact") }
+                        {
+                            progressBar.visibility = View.GONE
+                            contactAdapter.data = it
+                        },
+                        {
+                            progressBar.visibility = View.GONE
+                            toast("Erreur $it")
+                            Timber.e(it, "Unable to retrieve contact")
+                        }
                 )
     }
 }
