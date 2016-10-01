@@ -13,6 +13,8 @@ class Birthday(
         private val regex = "%t".toRegex()
     }
 
+    constructor(month: Int, day: Int) : this(null, month, day)
+
     @Suppress("DEPRECATION")
     private val date by lazy {
         Date((year ?: 1900) - 1900, month - 1, day)
@@ -26,7 +28,7 @@ class Birthday(
         if (day < 1 || day > 31) {
             throw IllegalArgumentException("day should be between 1 and 31 ($this)")
         }
-        if (month < 1 && month > 12) {
+        if (month < 1 || month > 12) {
             throw IllegalArgumentException("month should be between 1 and 12 ($this)")
         }
     }
@@ -43,7 +45,7 @@ class Birthday(
 
     fun withYear(pYear: Int) = Birthday(day = day, month = month, year = pYear)
 
-    fun inDays(reference: Calendar = today()): Long {
+    fun inDays(reference: Calendar = today()): Int {
         val yearBirthday = withYear(reference.get(Calendar.YEAR))
 
         val referenceTime: Long = reference.timeInMillis
@@ -53,7 +55,7 @@ class Birthday(
         }
 
         val delta: Long = birthdayTime - referenceTime
-        return delta / (1000 * 60 * 60 * 24)
+        return (delta / (1000 * 60 * 60 * 24)).toInt()
     }
 
     override fun toString(): String {

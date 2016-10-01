@@ -36,4 +36,5 @@ dependencies {
     compile dep.timber
 
     testCompile testDep.junit
+    testCompile testDep.kotlinTest
 }

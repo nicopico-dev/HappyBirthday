@@ -11,11 +11,20 @@ fun Calendar.toBirthday() = Birthday(
         day = get(Calendar.DAY_OF_MONTH)
 )
 
+fun calendar(year: Int, month: Int, day: Int): Calendar {
+    return Calendar.getInstance().apply {
+        clear()
+        set(year, month - 1, day)
+    }
+}
+
 private val DELTA = TimeUnit.MINUTES.toMillis(5)
 private var todayCache: Calendar? = null
+
 fun today(): Calendar {
-    var today = todayCache ?: Calendar.getInstance()
-    if (System.currentTimeMillis() - today.timeInMillis > DELTA) {
+    var today = todayCache
+    if (today == null
+            || System.currentTimeMillis() - today.timeInMillis > DELTA) {
         today = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
@@ -23,5 +32,5 @@ fun today(): Calendar {
             set(Calendar.MILLISECOND, 0)
         }
     }
-    return today
+    return today!!
 }
