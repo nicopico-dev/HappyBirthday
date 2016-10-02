@@ -55,7 +55,7 @@ class Birthday(
         }
 
         val delta: Long = birthdayTime - referenceTime
-        return (delta / (1000 * 60 * 60 * 24)).toInt()
+        return Math.ceil(delta / (1000.0 * 60 * 60 * 24)).toInt()
     }
 
     override fun toString(): String {

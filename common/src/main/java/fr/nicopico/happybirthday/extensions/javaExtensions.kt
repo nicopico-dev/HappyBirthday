@@ -11,6 +11,8 @@ fun Calendar.toBirthday() = Birthday(
         day = get(Calendar.DAY_OF_MONTH)
 )
 
+fun Birthday.toCalendar() = calendar(year = year!!, month = month, day = day)
+
 fun calendar(year: Int, month: Int, day: Int): Calendar {
     return Calendar.getInstance().apply {
         clear()

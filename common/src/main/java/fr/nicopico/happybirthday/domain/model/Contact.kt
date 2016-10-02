@@ -13,7 +13,7 @@ class Contact(
         val avatarFull: Uri? = null
 ) : Identifiable, Comparable<Contact> {
 
-    fun getAge(reference: Calendar = GregorianCalendar.getInstance()): Int? {
+    fun getAge(reference: Calendar = Calendar.getInstance()): Int? {
         if (birthday.year == null) {
             return null
         }
@@ -43,7 +43,7 @@ class Contact(
 }
 
 fun nextBirthdaySorter(): (Contact, Contact) -> Int {
-    val reference = GregorianCalendar.getInstance().toBirthday()
+    val reference = Calendar.getInstance().toBirthday()
     return { c1, c2 ->
         val b1 = c1.birthday
         val b2 = c2.birthday
