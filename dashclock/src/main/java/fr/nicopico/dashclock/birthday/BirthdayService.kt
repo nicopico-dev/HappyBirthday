@@ -84,7 +84,8 @@ class BirthdayService : DashClockExtension() {
     }
 
     private fun updatePreferences() {
-        daysLimit = prefs.getInt(SettingsActivity.PREF_DAYS_LIMIT_KEY, 7)
+        // Note daysLimit preference is stored as a String because of the EditTextPreference
+        daysLimit = prefs.getString(SettingsActivity.PREF_DAYS_LIMIT_KEY, "7").toInt()
         showQuickContact = prefs.getBoolean(SettingsActivity.PREF_SHOW_QUICK_CONTACT, true)
         contactGroupId = prefs.getString(SettingsActivity.PREF_CONTACT_GROUP, SettingsActivity.NO_CONTACT_GROUP_SELECTED)
 

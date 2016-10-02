@@ -32,6 +32,7 @@ public class SettingsActivity extends PreferenceActivity {
 
     private static final String TAG = SettingsActivity.class.getSimpleName();
 
+    public static final String PREF_DAYS_LIMIT_KEY = "pref_days_limit";
     public static final String PREF_SHOW_QUICK_CONTACT = "pref_show_quickcontact";
     public static final String PREF_DISABLE_LOCALIZATION = "pref_disable_localization";
     public static final String PREF_CONTACT_GROUP = "pref_contact_group";
@@ -86,6 +87,7 @@ public class SettingsActivity extends PreferenceActivity {
                             ContactsContract.Groups.TITLE
                     }, null, null, null
             );
+            assert groupCursor != null;
             int nbGroups = groupCursor.getCount();
             CharSequence[] groupNames = new CharSequence[nbGroups + 1];
             CharSequence[] groupIds = new CharSequence[nbGroups + 1];
@@ -110,7 +112,6 @@ public class SettingsActivity extends PreferenceActivity {
         }
     }
 
-    public static final String PREF_DAYS_LIMIT_KEY = "pref_days_limit";
     /**
      * A preference value change listener that updates the preference's summary to reflect its new
      * value.
