@@ -9,21 +9,24 @@ import android.preference.PreferenceManager
 import android.provider.ContactsContract.Contacts
 import com.google.android.apps.dashclock.api.DashClockExtension
 import com.google.android.apps.dashclock.api.ExtensionData
-import fr.nicopico.happybirthday.data.repository.ContactRepository
 import fr.nicopico.happybirthday.domain.model.Contact
 import fr.nicopico.happybirthday.domain.model.nextBirthdaySorter
+import fr.nicopico.happybirthday.extensions.toCalendar
 import rx.Subscriber
 import rx.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
 
 class BirthdayService : DashClockExtension() {
 
-    private val DEFAULT_LANG = "en"
+    private val DEFAULT_LANG = BuildConfig.DEFAULT_LANG
 
-    @Inject
-    lateinit var contactRepository: ContactRepository
+    private val contactRepository by lazy {
+        DaggerAppComponent.builder()
+                .appModule(AppModule(application))
+                .build()
+                .contactRepository()
+    }
     private val prefs: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(applicationContext)
     }
@@ -37,12 +40,9 @@ class BirthdayService : DashClockExtension() {
 
     override fun onCreate() {
         super.onCreate()
-
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
-
-        // TODO Inject
     }
 
     override fun onInitialize(isReconnect: Boolean) {
@@ -64,21 +64,21 @@ class BirthdayService : DashClockExtension() {
                         filter = { it.inDays(today) <= daysLimit },
                         sorter = nextBirthdaySorter()
                 )
-                .first()
                 .observeOn(Schedulers.trampoline())
                 .subscribe(ContactSubscriber(today))
     }
 
+    @Suppress("DEPRECATION")
     private fun handleLocalization() {
         val config = Configuration()
         config.setToDefaults()
         if (needToRefreshLocalization || disableLocalization && DEFAULT_LANG != Locale.getDefault().language) {
-            config.locale = when {
+            val locale = when {
                 disableLocalization -> Locale(DEFAULT_LANG)
                 else -> Resources.getSystem().configuration.locale
             }
-
-            Locale.setDefault(config.locale)
+            config.locale = locale
+            Locale.setDefault(locale)
             baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
         }
     }
@@ -121,28 +121,35 @@ class BirthdayService : DashClockExtension() {
                 val res = resources
                 val firstContactName = contacts.first().displayName
 
-                val collapsedTitle = "$firstContactName + ${contacts.size - 1}"
+                val collapsedTitle = when (contacts.size) {
+                    1 -> firstContactName
+                    else -> "$firstContactName + ${contacts.size - 1}"
+                }
                 val expandedTitle = res.getString(R.string.single_birthday_title_format, firstContactName)
                 val body = StringBuilder()
 
-                contacts.slice(1..contacts.size).forEach {
-                    body.append('\n')
-                            .append(it.displayName)
-                            .append(", ")
-
-                    val age = it.getAge(today)
-                    if (age != null) {
-                        val ageText = res.getQuantityString(R.plurals.age_format, age, age)
-                        body.append(ageText).append(' ')
+                contacts.forEachIndexed { i, contact ->
+                    if (i > 0) {
+                        body.append(contact.displayName).append(", ")
                     }
 
-                    val inDays = it.birthday?.inDays(today)
-                    val inDaysFormat = when(inDays) {
+                    val birthday = contact.birthday
+                    if (birthday.year != null) {
+                        // Compute age on next birthday
+                        val nextBirthdayCal = birthday
+                                .withYear(today.get(Calendar.YEAR))
+                                .toCalendar()
+                        val age = contact.getAge(nextBirthdayCal)!!
+                        body.append(res.getQuantityString(R.plurals.age_format, age, age)).append(' ')
+                    }
+
+                    val inDays = birthday.inDays(today)
+                    val inDaysFormat = when (inDays) {
                         0 -> R.string.when_today_format
                         1 -> R.string.when_tomorrow_format
                         else -> R.string.when_days_format
                     }
-                    body.append(res.getString(inDaysFormat, inDays))
+                    body.append(res.getString(inDaysFormat, inDays)).append('\n')
                 }
 
                 publishUpdate(ExtensionData()
@@ -163,6 +170,5 @@ class BirthdayService : DashClockExtension() {
         override fun onCompleted() {
             // no-op
         }
-
     }
 }

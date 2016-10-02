@@ -16,6 +16,8 @@ android {
         targetSdkVersion sdk.targetSdk
         versionCode 11
         versionName '1.6.0'
+
+        buildConfigField 'String', 'DEFAULT_LANG', '"en"'
     }
 
     signingConfigs {
@@ -37,7 +39,20 @@ android {
     }
 }
 
+kapt {
+    generateStubs = true
+}
+
 dependencies {
     compile project(':common')
     compile 'com.google.android.apps.dashclock:dashclock-api:2.0.0'
+
+    compile dep.dagger
+    kapt dep.dagger_compiler
+    provided dep.jsr250
+    provided dep.jsr305
+    compile dep.kotlin
+    compile dep.rxandroid
+    compile dep.rxjava
+    compile dep.timber
 }
