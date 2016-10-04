@@ -12,6 +12,7 @@ import com.google.android.apps.dashclock.api.ExtensionData
 import fr.nicopico.happybirthday.domain.model.Contact
 import fr.nicopico.happybirthday.domain.model.nextBirthdaySorter
 import fr.nicopico.happybirthday.extensions.toCalendar
+import fr.nicopico.happybirthday.inject.DataModule
 import rx.Subscriber
 import rx.schedulers.Schedulers
 import timber.log.Timber
@@ -24,6 +25,7 @@ class BirthdayService : DashClockExtension() {
     private val contactRepository by lazy {
         DaggerAppComponent.builder()
                 .appModule(AppModule(application))
+                .dataModule(DataModule(BuildConfig.DEBUG))
                 .build()
                 .contactRepository()
     }
