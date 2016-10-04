@@ -34,7 +34,7 @@ class BirthdayService : DashClockExtension() {
     private var daysLimit: Int = 0
     private var showQuickContact: Boolean = false
     private var disableLocalization: Boolean = false
-    private var contactGroupId: String? = null
+    private var contactGroupId: Long? = null
 
     private var needToRefreshLocalization: Boolean = false
 
@@ -57,12 +57,12 @@ class BirthdayService : DashClockExtension() {
 
         handleLocalization()
 
-        // TODO Handle groups
         val today = Calendar.getInstance()
         contactRepository
                 .list(
                         filter = { it.inDays(today) <= daysLimit },
-                        sorter = nextBirthdaySorter()
+                        sorter = nextBirthdaySorter(),
+                        groupId = contactGroupId
                 )
                 .observeOn(Schedulers.trampoline())
                 .subscribe(ContactSubscriber(today))
@@ -87,7 +87,13 @@ class BirthdayService : DashClockExtension() {
         // Note daysLimit preference is stored as a String because of the EditTextPreference
         daysLimit = prefs.getString(SettingsActivity.PREF_DAYS_LIMIT_KEY, "7").toInt()
         showQuickContact = prefs.getBoolean(SettingsActivity.PREF_SHOW_QUICK_CONTACT, true)
-        contactGroupId = prefs.getString(SettingsActivity.PREF_CONTACT_GROUP, SettingsActivity.NO_CONTACT_GROUP_SELECTED)
+        val noGroupId = SettingsActivity.NO_CONTACT_GROUP_SELECTED
+        contactGroupId = prefs.getString(SettingsActivity.PREF_CONTACT_GROUP, noGroupId)
+                .let {
+                    if (it != noGroupId) it
+                    else null
+                }
+                ?.toLong()
 
         val previousDisableLocalizationValue = disableLocalization
         disableLocalization = prefs.getBoolean(SettingsActivity.PREF_DISABLE_LOCALIZATION, false)

@@ -37,7 +37,7 @@ public class SettingsActivity extends PreferenceActivity {
     public static final String PREF_DISABLE_LOCALIZATION = "pref_disable_localization";
     public static final String PREF_CONTACT_GROUP = "pref_contact_group";
 
-    public static final String NO_CONTACT_GROUP_SELECTED = "NO_CONTACT_GROUP_SELECTED";
+    public static final String NO_CONTACT_GROUP_SELECTED = "-1";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
