@@ -15,3 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keepattributes *Annotation*
+-keepattributes InnerClasses,EnclosingMethod
+-keepattributes SourceFile,LineNumberTable

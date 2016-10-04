@@ -15,3 +15,11 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontwarn sun.misc.Unsafe
+-dontnote org.apache.http.**
+-dontnote android.net.http.**
+
+-keepclassmembers class rx.internal.** {
+   <fields>;
+}

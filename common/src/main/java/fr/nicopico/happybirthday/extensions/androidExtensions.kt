@@ -15,7 +15,8 @@ fun Cursor.floatValue(col: String): Float? = getFloat(getColumnIndexOrThrow(col)
 fun Cursor.doubleValue(col: String): Double? = getDouble(getColumnIndexOrThrow(col))
 fun Cursor.stringValue(col: String): String? = getString(getColumnIndexOrThrow(col))
 
-inline fun <T> Context.ensurePermission(vararg permissions: String, crossinline action: () -> Observable<T>): Observable<T> {
+// FIXME inline does not work with proguard
+fun <T> Context.ensurePermission(vararg permissions: String, action: () -> Observable<T>): Observable<T> {
     return RxPermissions
             .getInstance(this)
             .request(*permissions)
