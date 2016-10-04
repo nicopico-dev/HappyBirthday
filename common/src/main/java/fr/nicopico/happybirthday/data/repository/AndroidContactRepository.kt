@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.database.Cursor
 import android.provider.ContactsContract.CommonDataKinds.Event
+import android.provider.ContactsContract.CommonDataKinds.GroupMembership
 import android.provider.ContactsContract.Contacts.Photo
 import android.provider.ContactsContract.Data
 import com.squareup.sqlbrite.BriteContentResolver
@@ -32,11 +33,16 @@ internal class AndroidContactRepository(
         }
     }
 
-    override fun list(filter: (Birthday) -> Boolean, sorter: (Contact, Contact) -> Int): Observable<List<Contact>> {
+    override fun list(
+            groupId: Long?,
+            filter: (Birthday) -> Boolean,
+            sorter: (Contact, Contact) -> Int
+    ): Observable<List<Contact>> {
         return context.ensurePermission(Manifest.permission.READ_CONTACTS) {
             getBirthdayQuery()
-                    .flatMap {
-                        it
+                    .flatMap { query: SqlBrite.Query ->
+                        // Build contacts for each birthday
+                        val contacts = query
                                 .asRows { cursor: Cursor ->
                                     ContactBirthday(
                                             contactId = cursor.longValue(Data.CONTACT_ID)!!,
@@ -45,7 +51,18 @@ internal class AndroidContactRepository(
                                 }
                                 .filter { it.birthday?.let(filter) ?: false }
                                 .flatMap { getContactInfo(it.contactId, it.birthday!!) }
-                                .toSortedList(sorter)
+
+                        // Filter by groupId if provided
+                        val groupFiltered = when (groupId) {
+                            null -> contacts
+                            else -> getContactIdsInGroup(groupId).flatMap {
+                                contactIdsInGroup ->
+                                contacts.filter { it.id in contactIdsInGroup }
+                            }
+                        }
+
+                        // Sort the result
+                        groupFiltered.toSortedList(sorter)
                     }
         }
     }
@@ -66,9 +83,25 @@ internal class AndroidContactRepository(
                         else -> it.plus(contactId.toString())
                     }
                 },
-                null,
+                Data.CONTACT_ID,
                 false
         )
+    }
+
+    private fun getContactIdsInGroup(groupId: Long): Observable<List<Long>> {
+        return contentResolver
+                .createQuery(
+                        Data.CONTENT_URI,
+                        arrayOf(Data.CONTACT_ID),
+                        "${Data.MIMETYPE} = ? and ${GroupMembership.GROUP_ROW_ID} = ?",
+                        arrayOf(GroupMembership.CONTENT_ITEM_TYPE, groupId.toString()),
+                        Data.CONTACT_ID,
+                        false
+                )
+                .mapToList {
+                    it.longValue(Data.CONTACT_ID)!!
+                }
+                .first()
     }
 
     private fun getContactInfo(contactId: Long, birthday: Birthday): Observable<Contact> {
