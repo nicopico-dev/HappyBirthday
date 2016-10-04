@@ -14,6 +14,14 @@ class ContactTest {
     }
 
     @Test
+    fun testNoYear() {
+        val b = Birthday(6, 10)
+        val c = Contact(1, "1", "Nicolas P.", b)
+        val reference = calendar(2016, 10, 2)
+        assert(c.getAge(reference) == null)
+    }
+
+    @Test
     fun testAgeNextYear() {
         val b = Birthday(1980, 6, 10)
         val c = Contact(1, "1", "Nicolas P.", b)
