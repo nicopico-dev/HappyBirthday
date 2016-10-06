@@ -31,6 +31,7 @@ ext {
             rxjava_debug        : 'io.reactivex:rxjava-debug:1.0.3',
             rxpermissions       : 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar',
             sqlbrite            : 'com.squareup.sqlbrite:sqlbrite:0.7.0',
+            threeTenAbp         : 'com.jakewharton.threetenabp:threetenabp:1.0.4',
             timber              : 'com.jakewharton.timber:timber:4.3.1',
 
             stetho              : "com.facebook.stetho:stetho:$stetho_version",
