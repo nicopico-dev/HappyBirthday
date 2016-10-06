@@ -9,10 +9,12 @@ import android.preference.PreferenceManager
 import android.provider.ContactsContract.Contacts
 import com.google.android.apps.dashclock.api.DashClockExtension
 import com.google.android.apps.dashclock.api.ExtensionData
+import com.jakewharton.threetenabp.AndroidThreeTen
 import fr.nicopico.happybirthday.domain.model.Contact
 import fr.nicopico.happybirthday.domain.model.nextBirthdaySorter
-import fr.nicopico.happybirthday.extensions.toCalendar
+import fr.nicopico.happybirthday.extensions.today
 import fr.nicopico.happybirthday.inject.DataModule
+import org.threeten.bp.LocalDate
 import rx.Subscriber
 import rx.schedulers.Schedulers
 import timber.log.Timber
@@ -42,6 +44,7 @@ class BirthdayService : DashClockExtension() {
 
     override fun onCreate() {
         super.onCreate()
+        AndroidThreeTen.init(application)
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
@@ -59,7 +62,7 @@ class BirthdayService : DashClockExtension() {
 
         handleLocalization()
 
-        val today = Calendar.getInstance()
+        val today = today()
         contactRepository
                 .list(
                         filter = { it.inDays(today) <= daysLimit },
@@ -119,7 +122,7 @@ class BirthdayService : DashClockExtension() {
     }
 
     private inner class ContactSubscriber(
-            val today: Calendar
+            val today: LocalDate
     ) : Subscriber<List<Contact>>() {
 
         override fun onNext(contacts: List<Contact>) {
@@ -146,16 +149,16 @@ class BirthdayService : DashClockExtension() {
                     if (birthday.year != null) {
                         // Compute age on next birthday
                         val nextBirthdayCal = birthday
-                                .withYear(today.get(Calendar.YEAR))
-                                .toCalendar()
+                                .toLocalDate()
+                                .withYear(today.year)
                         val age = contact.getAge(nextBirthdayCal)!!
                         body.append(res.getQuantityString(R.plurals.age_format, age, age)).append(' ')
                     }
 
                     val inDays = birthday.inDays(today)
                     val inDaysFormat = when (inDays) {
-                        0 -> R.string.when_today_format
-                        1 -> R.string.when_tomorrow_format
+                        0L -> R.string.when_today_format
+                        1L -> R.string.when_tomorrow_format
                         else -> R.string.when_days_format
                     }
                     body.append(res.getString(inDaysFormat, inDays)).append('\n')

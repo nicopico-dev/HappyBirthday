@@ -38,4 +38,6 @@ dependencies {
 
     testCompile testDep.junit
     testCompile testDep.kotlinTest
+    testCompile testDep.robolectric
+    testCompile testDep.threeTen
 }

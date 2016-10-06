@@ -47,6 +47,7 @@ ext {
             mockito      : 'org.mockito:mockito-core:1.10.19',
             mockitoKotlin: 'com.nhaarman:mockito-kotlin:0.4.0',
             robolectric  : 'org.robolectric:robolectric:3.1.2',
+            threeTen     : 'org.threeten:threetenbp:1.3.1',
             kotlinTest   : "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
     ]
 }

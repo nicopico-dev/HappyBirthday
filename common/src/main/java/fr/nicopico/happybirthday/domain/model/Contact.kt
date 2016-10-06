@@ -2,7 +2,7 @@ package fr.nicopico.happybirthday.domain.model
 
 import android.net.Uri
 import fr.nicopico.happybirthday.extensions.toBirthday
-import java.util.*
+import org.threeten.bp.LocalDate
 
 class Contact(
         override val id: Long,
@@ -13,7 +13,7 @@ class Contact(
         val avatarFull: Uri? = null
 ) : Identifiable, Comparable<Contact> {
 
-    fun getAge(reference: Calendar = Calendar.getInstance()): Int? {
+    fun getAge(reference: LocalDate = LocalDate.now()): Int? {
         if (birthday.year == null) {
             return null
         }
@@ -43,7 +43,7 @@ class Contact(
 }
 
 fun nextBirthdaySorter(): (Contact, Contact) -> Int {
-    val reference = Calendar.getInstance().toBirthday()
+    val reference = LocalDate.now().toBirthday()
     return { c1, c2 ->
         val b1 = c1.birthday
         val b2 = c2.birthday

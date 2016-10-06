@@ -1,7 +1,10 @@
 package fr.nicopico.happybirthday.domain.model
 
+import android.util.LruCache
 import fr.nicopico.happybirthday.extensions.today
-import java.util.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.temporal.ChronoUnit
 
 class Birthday(
         val year: Int?,
@@ -10,19 +13,14 @@ class Birthday(
 ) : Comparable<Birthday> {
 
     companion object {
-        private val regex = "%t".toRegex()
+        private val formatterCache = object: LruCache<String, DateTimeFormatter>(5) {
+            override fun create(key: String): DateTimeFormatter {
+                return DateTimeFormatter.ofPattern(key)
+            }
+        }
     }
 
     constructor(month: Int, day: Int) : this(null, month, day)
-
-    @Suppress("DEPRECATION")
-    private val date by lazy {
-        Date((year ?: 1900) - 1900, month - 1, day)
-    }
-
-    private val timestamp by lazy {
-        date.time
-    }
 
     init {
         if (day < 1 || day > 31) {
@@ -33,30 +31,32 @@ class Birthday(
         }
     }
 
-    fun format(format: String): String {
-        val count = regex.findAll(format).let { it.count() }
-        val args = kotlin.arrayOfNulls<Date>(count).apply {
-            for (i in 0..count - 1) {
-                this[i] = date
-            }
+    private val localDate by lazy {
+        if (year != null) {
+            toLocalDate()
         }
-        return String.format(Locale.getDefault(), format, *args)
+        else {
+            withYear(1900).toLocalDate()
+        }
+    }
+
+    fun format(format: String): String {
+        return formatterCache[format].format(localDate)
     }
 
     fun withYear(pYear: Int) = Birthday(day = day, month = month, year = pYear)
 
-    fun inDays(reference: Calendar = today()): Int {
-        val yearBirthday = withYear(reference.get(Calendar.YEAR))
-
-        val referenceTime: Long = reference.timeInMillis
-        val birthdayTime: Long = when (referenceTime <= yearBirthday.timestamp) {
-            true -> yearBirthday.timestamp
-            false -> yearBirthday.withYear(yearBirthday.year!! + 1).timestamp
+    fun inDays(reference: LocalDate = today()): Long {
+        val yearLocalDate = toLocalDate().withYear(reference.year)
+        val nextBirthdayDate = when (reference <= yearLocalDate) {
+            true -> yearLocalDate
+            false -> yearLocalDate.plusYears(1)
         }
 
-        val delta: Long = birthdayTime - referenceTime
-        return Math.ceil(delta / (1000.0 * 60 * 60 * 24)).toInt()
+        return ChronoUnit.DAYS.between(reference, nextBirthdayDate)
     }
+
+    fun toLocalDate(): LocalDate  = LocalDate.of(year!!, month, day)
 
     override fun toString(): String {
         return "$day/$month/${year ?: '?'}"

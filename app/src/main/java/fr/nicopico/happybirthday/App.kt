@@ -1,6 +1,7 @@
 package fr.nicopico.happybirthday
 
 import android.app.Application
+import com.jakewharton.threetenabp.AndroidThreeTen
 import fr.nicopico.happybirthday.inject.AppComponent
 import fr.nicopico.happybirthday.inject.AppModule
 import fr.nicopico.happybirthday.inject.DaggerAppComponent
@@ -14,6 +15,8 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        AndroidThreeTen.init(this)
+
         component = DaggerAppComponent.builder()
                 .appModule(AppModule(this))
                 .dataModule(DataModule(debug = BuildConfig.DEBUG))
