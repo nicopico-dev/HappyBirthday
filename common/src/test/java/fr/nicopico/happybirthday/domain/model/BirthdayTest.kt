@@ -52,8 +52,39 @@ class BirthdayTest {
     }
 
     @Test
-    fun leapYear() {
-        TODO("Check birthday on leap year")
+    fun marsBirthdayInDaysOnLeapYear() {
+        val b = Birthday(2007, 3, 1)
+        val reference = date(2016, 2, 28)
+        assert(b.inDays(reference) == 2L)
+    }
+
+    @Test
+    fun leapBirthdayInDaysOnNonLeapYear() {
+        val b = Birthday(2008, 2, 29)
+        val reference = date(2017, 2, 28)
+        Locale.setDefault(Locale.US)
+        assert(b.inDays(reference) == 0L)
+    }
+
+    @Test
+    fun leapBirthdayInDaysOnNonLeapYearTaiwan() {
+        val b = Birthday(2008, 2, 29)
+        val reference = date(2017, 2, 28)
+        Locale.setDefault(Locale.TAIWAN)
+        assert(b.inDays(reference) == 1L)
+    }
+
+    @Test
+    fun leapBirthdayToLocalDateOnNonLeapYear() {
+        val b = Birthday(2008, 2, 29)
+        b.withYear(2017).toLocalDate()
+    }
+
+    @Test
+    fun leapBirthdayWithYearConservation() {
+        val b = Birthday(2008, 2, 29)
+        val b2 = b.withYear(2016).withYear(2008)
+        assert(b == b2, { "$b is not equal to $b2" })
     }
 
     @Test
@@ -70,6 +101,14 @@ class BirthdayTest {
         Locale.setDefault(Locale.US)
         val format = b.format("d MMMM")
         assert(format.toUpperCase() == "20 JANUARY")
+    }
+
+    @Test
+    fun formatLeapBirthdayNoYear() {
+        val b = Birthday(2, 29)
+        Locale.setDefault(Locale.US)
+        val format = b.format("d MMMM")
+        assert(format.toUpperCase() == "29 FEBRUARY")
     }
 
     @Test
@@ -107,7 +146,7 @@ class BirthdayTest {
                 && ld.dayOfMonth == 10)
     }
 
-    @Test(expected = NullPointerException::class)
+    @Test(expected = UnsupportedOperationException::class)
     fun toLocalDateNoYear() {
         Birthday(6, 10).toLocalDate()
     }
