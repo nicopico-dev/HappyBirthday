@@ -56,7 +56,16 @@ class Birthday(
         return ChronoUnit.DAYS.between(reference, nextBirthdayDate)
     }
 
-    fun toLocalDate(): LocalDate  = LocalDate.of(year!!, month, day)
+    /**
+     * Convert this birthday to a [LocalDate]
+     * @throws UnsupportedOperationException if the birthday's [year] is not specified
+     */
+    fun toLocalDate(): LocalDate {
+        if (year == null) {
+            throw UnsupportedOperationException("Cannot convert this birthday $this to localDate (no year)")
+        }
+        return LocalDate.of(year, month, day)
+    }
 
     override fun toString(): String {
         return "$day/$month/${year ?: '?'}"
