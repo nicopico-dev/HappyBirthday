@@ -6,7 +6,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
 
-class Birthday(
+data class Birthday(
         val year: Int?,
         val month: Int,
         val day: Int

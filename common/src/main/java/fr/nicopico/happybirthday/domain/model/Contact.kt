@@ -31,7 +31,7 @@ class Contact(
     override fun compareTo(other: Contact): Int {
         val birthdayCompare = birthday.compareTo(other.birthday)
         return when (birthdayCompare) {
-            0    -> displayName.compareTo(other.displayName)
+            0 -> displayName.compareTo(other.displayName)
             else -> birthdayCompare
         }
     }
@@ -42,16 +42,25 @@ class Contact(
     }
 }
 
-fun nextBirthdaySorter(): (Contact, Contact) -> Int {
-    val reference = LocalDate.now().toBirthday()
+fun nextBirthdaySorter(reference: LocalDate = LocalDate.now()): (Contact, Contact) -> Int {
+    val referenceBirthday = reference.toBirthday()
     return { c1, c2 ->
         val b1 = c1.birthday
         val b2 = c2.birthday
 
-        val refVersusB1 = reference.compareTo(b1)
-        val refVersusB2 = reference.compareTo(b2)
+        val refVersusB1 = referenceBirthday.compareTo(b1)
+        val refVersusB2 = referenceBirthday.compareTo(b2)
+
         if (refVersusB1 == refVersusB2) {
             c1.compareTo(c2)
+        }
+        else if (refVersusB1 == 0) {
+            // c1 birthday is today !
+            -1
+        }
+        else if (refVersusB2 == 0) {
+            // c2 birthday is today !
+            1
         }
         else {
             refVersusB1 - refVersusB2
