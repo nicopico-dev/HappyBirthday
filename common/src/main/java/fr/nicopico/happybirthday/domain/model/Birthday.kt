@@ -3,6 +3,7 @@ package fr.nicopico.happybirthday.domain.model
 import android.util.LruCache
 import fr.nicopico.happybirthday.extensions.today
 import org.threeten.bp.LocalDate
+import org.threeten.bp.MonthDay
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
 
@@ -36,7 +37,7 @@ data class Birthday(
             toLocalDate()
         }
         else {
-            withYear(1900).toLocalDate()
+            withYear(1904).toLocalDate()
         }
     }
 
@@ -64,7 +65,7 @@ data class Birthday(
         if (year == null) {
             throw UnsupportedOperationException("Cannot convert this birthday $this to localDate (no year)")
         }
-        return LocalDate.of(year, month, day)
+        return MonthDay.of(month, day).atYear(year)
     }
 
     override fun toString(): String {

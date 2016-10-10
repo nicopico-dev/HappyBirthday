@@ -67,14 +67,6 @@ class BirthdayTest {
     }
 
     @Test
-    fun leapBirthdayInDaysOnNonLeapYearTaiwan() {
-        val b = Birthday(2008, 2, 29)
-        val reference = date(2017, 2, 28)
-        Locale.setDefault(Locale.TAIWAN)
-        assert(b.inDays(reference) == 1L)
-    }
-
-    @Test
     fun leapBirthdayToLocalDateOnNonLeapYear() {
         val b = Birthday(2008, 2, 29)
         b.withYear(2017).toLocalDate()
