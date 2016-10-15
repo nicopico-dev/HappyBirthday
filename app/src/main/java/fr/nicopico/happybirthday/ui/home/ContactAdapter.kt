@@ -40,21 +40,19 @@ class ContactAdapter(context: Context) : RecyclerView.Adapter<ContactAdapter.Vie
 
             with(itemView.txtInfos) {
                 val birthday = contact.birthday
-                if (birthday == null) {
-                    visibility = View.GONE
-                }
-                else {
-                    visibility = View.VISIBLE
-                    text = birthday.format("%te %tB,")
+                visibility = View.VISIBLE
+                text = birthday.format("d MMMM,")
 
-                    val age = contact.getAge()
+                if (contact.canComputeAge()) {
+                    val nextBirthdayDate = birthday.nextBirthdayDate()
+                    val age = contact.getAge(nextBirthdayDate)
                     if (age != null) {
                         append(" $age ans")
                     }
-
-                    val nextOccurrence = birthday.inDays()
-                    append(" dans $nextOccurrence jours")
                 }
+
+                val nextOccurrence = birthday.inDays()
+                append(" dans $nextOccurrence jours")
             }
         }
     }
