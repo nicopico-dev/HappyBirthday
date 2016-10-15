@@ -56,12 +56,12 @@
     <string name="pref_days_limit_0_summary_format">
         Notifiche compleanni di oggi
     </string>
-    <plurals name="pref_days_limit_summary_format">
-        <!-- Today and tomorrow -->
-        <item quantity="one">
-            Notifiche compleanni di domani
-        </item>
-        <!-- N days in the future -->
+    <!-- Today and tomorrow -->
+    <string name="pref_days_limit_1_summary_format">
+        Notifiche compleanni di domani
+    </string>
+    <!-- N days in the future (ignore missing 'one' quantity) -->
+    <plurals name="pref_days_limit_summary_format" tools:ignore="MissingQuantity">
         <item quantity="other">
             Compleanni dei prossimi <xliff:g id="days_limit">%1$d</xliff:g> giorni
         </item>

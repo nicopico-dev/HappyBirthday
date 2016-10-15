@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <!-- Application title - DO NOT TRANSLATE -->
     <string name="app_name">
@@ -54,10 +54,12 @@
     <string name="pref_days_limit_0_summary_format">
         Erinnerung am Geburtstag einblenden
     </string>
-    <plurals name="pref_days_limit_summary_format">
-        <item quantity="one">
-            Geburtstage von morgen anzeigen
-        </item>
+    <!-- Today and Tomorrow -->
+    <string name="pref_days_limit_1_summary_format">
+        Geburtstage von morgen anzeigen
+    </string>
+    <!-- N days in the future (ignore missing 'one' quantity) -->
+    <plurals name="pref_days_limit_summary_format" tools:ignore="MissingQuantity">
         <item quantity="other">
             Geburtstage der folgenden <xliff:g id="days_limit">%1$d</xliff:g> Tage anzeigen
         </item>

@@ -59,12 +59,12 @@
     <string name="pref_days_limit_0_summary_format">
         Notify birthdays for today
     </string>
+    <!-- Today and Tomorrow -->
+    <string name="pref_days_limit_1_summary_format">
+        Notify birthdays for tomorrow
+    </string>
+    <!-- N days in the future -->
     <plurals name="pref_days_limit_summary_format">
-        <!-- Today and tomorrow -->
-        <item quantity="one">
-            Notify birthdays for tomorrow
-        </item>
-        <!-- N days in the future -->
         <item quantity="other">
             Notify birthdays for the next <xliff:g id="days_limit">%1$d</xliff:g> days
         </item>

@@ -150,6 +150,9 @@ public class SettingsActivity extends PreferenceActivity {
                 if (intValue == 0) {
                     summary = res.getString(R.string.pref_days_limit_0_summary_format);
                 }
+                else if (intValue == 1) {
+                    summary = res.getString(R.string.pref_days_limit_1_summary_format);
+                }
                 else {
                     summary = res.getQuantityString(
                             R.plurals.pref_days_limit_summary_format,

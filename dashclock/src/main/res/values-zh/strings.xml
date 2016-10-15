@@ -39,6 +39,9 @@
     <string name="pref_days_limit_title">天数限制</string>
     <!-- Today only -->
     <string name="pref_days_limit_0_summary_format">通知今天的生日</string>
+    <!-- Today and tomorrow -->
+    <string name="pref_days_limit_1_summary_format">通知未来1天内的生日</string>
+    <!-- N days in the future -->
     <plurals name="pref_days_limit_summary_format">
         <item quantity="other">
             通知未来<xliff:g id="days_limit">%1$d</xliff:g>天内的生日

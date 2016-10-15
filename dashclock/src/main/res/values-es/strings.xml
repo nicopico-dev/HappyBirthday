@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Application title - DO NOT TRANSLATE -->
     <string name="app_name">
@@ -54,12 +54,12 @@
     <string name="pref_days_limit_0_summary_format">
         Notificar los cumpleaños de hoy
     </string>
-    <plurals name="pref_days_limit_summary_format">
-        <!-- Today and tomorrow -->
-        <item quantity="one">
-            Notificar los cumpleaños de mañana
-        </item>
-        <!-- N days in the future -->
+    <!-- Today and tomorrow -->
+    <string name="pref_days_limit_1_summary_format">
+        Notificar los cumpleaños de mañana
+    </string>
+    <!-- N days in the future (ignore missing 'one' quantity) -->
+    <plurals name="pref_days_limit_summary_format" tools:ignore="MissingQuantity">
         <item quantity="other">
             Notificar los cumpleaños de los próximos <xliff:g id="days_limit">%1$d</xliff:g> días
         </item>

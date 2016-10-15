@@ -54,12 +54,12 @@
     <string name="pref_days_limit_0_summary_format">
         Affiche les anniversaires pour le jour même
     </string>
-    <plurals name="pref_days_limit_summary_format">
-        <!-- Today and tomorrow -->
-        <item quantity="one" tools:ignore="ImpliedQuantity">
-            Affiche les anniversaires pour le lendemain
-        </item>
-        <!-- N days in the future -->
+    <!-- Today and tomorrow -->
+    <string name="pref_days_limit_1_summary_format">
+        Affiche les anniversaires pour le lendemain
+    </string>
+    <!-- N days in the future -->
+    <plurals name="pref_days_limit_summary_format" tools:ignore="MissingQuantity">
         <item quantity="other">
             Affiche les anniversaires pour les <xliff:g id="days_limit">%1$s</xliff:g> prochains jours
         </item>

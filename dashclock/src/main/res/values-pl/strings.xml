@@ -57,12 +57,12 @@
     <string name="pref_days_limit_0_summary_format">
         Powiadamiaj o urodzinach tylko w dniu dzisiejszym.
     </string>
+    <!-- Today and tomorrow -->
+    <string name="pref_days_limit_1_summary_format">
+        Powiadamiaj o urodzinach dzisiaj i jutro.
+    </string>
+    <!-- N days in the future (ignore missing 'one' quantity) -->
     <plurals name="pref_days_limit_summary_format" tools:ignore="MissingQuantity">
-        <!-- Today and tomorrow -->
-        <item quantity="one">
-            Powiadamiaj o urodzinach dzisiaj i jutro.
-        </item>
-        <!-- N days in the future -->
         <item quantity="other">
             Powiadamiaj o urodzinach w ciągu najbliższych <xliff:g id="days_limit">%1$d</xliff:g> dni.
         </item>
