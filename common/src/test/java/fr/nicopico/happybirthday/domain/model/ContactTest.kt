@@ -4,8 +4,26 @@ import fr.nicopico.happybirthday.extensions.date
 import org.junit.Test
 import org.threeten.bp.LocalDate
 import java.util.*
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class ContactTest {
+
+    @Test
+    fun testCanComputeAge() {
+        val b = Birthday(1980, 6, 10)
+        val c = Contact(1, "1", "Nicolas P.", b)
+
+        assertTrue { c.canComputeAge() }
+    }
+
+    @Test
+    fun testCannotComputeAge() {
+        val b = Birthday(6, 10)
+        val c = Contact(1, "1", "Nicolas P.", b)
+
+        assertFalse { c.canComputeAge() }
+    }
 
     @Test
     fun testAge() {

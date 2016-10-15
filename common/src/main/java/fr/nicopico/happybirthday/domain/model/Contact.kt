@@ -13,6 +13,8 @@ class Contact(
         val avatarFull: Uri? = null
 ) : Identifiable, Comparable<Contact> {
 
+    fun canComputeAge(): Boolean = birthday.year != null
+
     fun getAge(reference: LocalDate = LocalDate.now()): Int? {
         if (birthday.year == null) {
             return null
