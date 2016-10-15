@@ -48,7 +48,7 @@ data class Birthday(
     fun withYear(pYear: Int) = Birthday(day = day, month = month, year = pYear)
 
     fun inDays(reference: LocalDate = today()): Long {
-        val yearLocalDate = toLocalDate().withYear(reference.year)
+        val yearLocalDate = withYear(reference.year).toLocalDate()
         val nextBirthdayDate = when (reference <= yearLocalDate) {
             true -> yearLocalDate
             false -> yearLocalDate.plusYears(1)

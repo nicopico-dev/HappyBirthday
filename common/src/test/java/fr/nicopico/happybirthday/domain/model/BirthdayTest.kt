@@ -131,6 +131,15 @@ class BirthdayTest {
     }
 
     @Test
+    fun inDaysNoYear() {
+        val b = Birthday(1, 2)
+        val reference = date(2016, 12, 31)
+        val expected = 2L
+        val actual = b.inDays(reference)
+        assert(actual == expected, { "Computed $actual instead of $expected from $reference to $b" })
+    }
+
+    @Test
     fun toLocalDate() {
         val ld = Birthday(1980, 6, 10).toLocalDate()
         assert(ld.year == 1980
