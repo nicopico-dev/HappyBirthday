@@ -146,11 +146,9 @@ class BirthdayService : DashClockExtension() {
                     }
 
                     val birthday = contact.birthday
-                    if (birthday.year != null) {
+                    if (contact.canComputeAge()) {
                         // Compute age on next birthday
-                        val nextBirthdayCal = birthday
-                                .toLocalDate()
-                                .withYear(today.year)
+                        val nextBirthdayCal = birthday.nextBirthdayDate(today)
                         val age = contact.getAge(nextBirthdayCal)!!
                         body.append(res.getQuantityString(R.plurals.age_format, age, age)).append(' ')
                     }
