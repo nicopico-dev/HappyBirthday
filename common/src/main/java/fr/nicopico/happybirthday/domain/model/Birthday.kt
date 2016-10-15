@@ -45,7 +45,10 @@ data class Birthday(
         return formatterCache[format].format(localDate)
     }
 
-    fun withYear(pYear: Int) = Birthday(day = day, month = month, year = pYear)
+    fun withYear(pYear: Int) = when(pYear) {
+        year -> this
+        else -> Birthday(day = day, month = month, year = pYear)
+    }
 
     fun inDays(reference: LocalDate = today()): Long {
         val yearLocalDate = withYear(reference.year).toLocalDate()

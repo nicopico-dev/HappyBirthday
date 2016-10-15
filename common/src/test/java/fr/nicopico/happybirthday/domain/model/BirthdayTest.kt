@@ -52,6 +52,17 @@ class BirthdayTest {
     }
 
     @Test
+    fun withYearReplace() {
+        val b = Birthday(1980, 6, 20)
+        val withYear = b.withYear(2006)
+        assert(
+                withYear.day == b.day
+                        && withYear.month == b.month
+                        && withYear.year == 2006
+        )
+    }
+
+    @Test
     fun marsBirthdayInDaysOnLeapYear() {
         val b = Birthday(2007, 3, 1)
         val reference = date(2016, 2, 28)
