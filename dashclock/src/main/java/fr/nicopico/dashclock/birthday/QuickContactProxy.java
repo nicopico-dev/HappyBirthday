@@ -24,12 +24,12 @@ import android.hardware.display.DisplayManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.Display;
+
+import timber.log.Timber;
 
 public class QuickContactProxy extends Activity {
 
-    private static final String TAG = QuickContactProxy.class.getSimpleName();
     private static final String EXTRA_CONTACT_ID = "EXTRA_CONTACT_ID";
 
     /**
@@ -50,7 +50,7 @@ public class QuickContactProxy extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!getIntent().hasExtra(EXTRA_CONTACT_ID)) {
-            Log.w(TAG, "QuickContact action received without EXTRA_CONTACT_ID extra");
+            Timber.w("QuickContact action received without EXTRA_CONTACT_ID extra");
             return;
         }
 

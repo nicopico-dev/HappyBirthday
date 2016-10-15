@@ -25,12 +25,11 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.MenuItem;
 
-public class SettingsActivity extends PreferenceActivity {
+import timber.log.Timber;
 
-    private static final String TAG = SettingsActivity.class.getSimpleName();
+public class SettingsActivity extends PreferenceActivity {
 
     public static final String PREF_DAYS_LIMIT_KEY = "pref_days_limit";
     public static final String PREF_SHOW_QUICK_CONTACT = "pref_show_quickcontact";
@@ -105,7 +104,7 @@ public class SettingsActivity extends PreferenceActivity {
             bindPreferenceSummaryToValue(listPreference);
         }
         catch (IndexOutOfBoundsException e) {
-            Log.e(TAG, "Error while building contact group list", e);
+            Timber.e(e, "Error while building contact group list");
         }
         finally {
             if (groupCursor != null) groupCursor.close();
@@ -143,7 +142,7 @@ public class SettingsActivity extends PreferenceActivity {
                     intValue = Integer.valueOf(stringValue);
                 }
                 catch (NumberFormatException e) {
-                    Log.e(TAG, "Unable to retrieve days limit preference. Restore default", e);
+                    Timber.e(e, "Unable to retrieve days limit preference. Restore default");
                     intValue = 7;
                 }
 
