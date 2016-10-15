@@ -115,6 +115,42 @@ class BirthdayTest {
     }
 
     @Test
+    fun nextBirthdayDateBefore() {
+        val b = Birthday(1980, 6, 10)
+        val reference = date(2016, 6, 1)
+        val expected = date(2016, 6, 10)
+        val actual = b.nextBirthdayDate(reference)
+        assert(actual == expected, { "Computed $actual instead of $expected" })
+    }
+
+    @Test
+    fun nextBirthdayDateSame() {
+        val b = Birthday(1980, 6, 10)
+        val reference = date(1980, 6, 10)
+        val expected = date(1980, 6, 10)
+        val actual = b.nextBirthdayDate(reference)
+        assert(actual == expected, { "Computed $actual instead of $expected" })
+    }
+
+    @Test
+    fun nextBirthdayDateAfter() {
+        val b = Birthday(1980, 6, 10)
+        val reference = date(2016, 7, 8)
+        val expected = date(2017, 6, 10)
+        val actual = b.nextBirthdayDate(reference)
+        assert(actual == expected, { "Computed $actual instead of $expected" })
+    }
+
+    @Test
+    fun nextBirthdayDateNoYear() {
+        val b = Birthday(6, 10)
+        val reference = date(2016, 7, 8)
+        val expected = date(2017, 6, 10)
+        val actual = b.nextBirthdayDate(reference)
+        assert(actual == expected, { "Computed $actual instead of $expected" })
+    }
+
+    @Test
     fun inDaysBefore() {
         val b = Birthday(1980, 6, 10)
         val reference = date(2016, 6, 1)

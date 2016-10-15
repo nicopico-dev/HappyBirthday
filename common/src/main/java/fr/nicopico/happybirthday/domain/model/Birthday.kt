@@ -14,7 +14,7 @@ data class Birthday(
 ) : Comparable<Birthday> {
 
     companion object {
-        private val formatterCache = object: LruCache<String, DateTimeFormatter>(5) {
+        private val formatterCache = object : LruCache<String, DateTimeFormatter>(5) {
             override fun create(key: String): DateTimeFormatter {
                 return DateTimeFormatter.ofPattern(key)
             }
@@ -41,23 +41,40 @@ data class Birthday(
         }
     }
 
+    /**
+     * Format this birthday date as a String
+     * @param format defined in [DateTimeFormatter]
+     */
     fun format(format: String): String {
         return formatterCache[format].format(localDate)
     }
 
-    fun withYear(pYear: Int) = when(pYear) {
+    /**
+     * Create a copy of this birthday, with the year set as [pYear]
+     */
+    fun withYear(pYear: Int) = when (pYear) {
         year -> this
         else -> Birthday(day = day, month = month, year = pYear)
     }
 
+    /**
+     * Return the number of days between [reference] and the next birthday
+     * @param reference Reference date, default to today
+     */
     fun inDays(reference: LocalDate = today()): Long {
+        return ChronoUnit.DAYS.between(reference, nextBirthdayDate(reference))
+    }
+
+    /**
+     * Return the next birthday day, starting from [reference]
+     * @param reference Reference date, default to today
+     */
+    fun nextBirthdayDate(reference: LocalDate = today()): LocalDate {
         val yearLocalDate = withYear(reference.year).toLocalDate()
-        val nextBirthdayDate = when (reference <= yearLocalDate) {
+        return when (reference <= yearLocalDate) {
             true -> yearLocalDate
             false -> yearLocalDate.plusYears(1)
         }
-
-        return ChronoUnit.DAYS.between(reference, nextBirthdayDate)
     }
 
     /**
