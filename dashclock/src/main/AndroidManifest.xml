@@ -29,8 +29,7 @@
             android:name=".SettingsActivity"
             android:logo="@drawable/ic_extension_white"
             android:label="@string/settings_title"
-            android:exported="true"
-            tools:ignore="ExportedPreferenceActivity"/>
+            android:exported="true"/>
 
         <activity
             android:name=".QuickContactProxy"
