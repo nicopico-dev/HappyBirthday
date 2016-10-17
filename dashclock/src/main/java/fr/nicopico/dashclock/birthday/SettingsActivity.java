@@ -16,20 +16,27 @@
 
 package fr.nicopico.dashclock.birthday;
 
+import android.Manifest.permission;
 import android.app.ActionBar;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresPermission;
 import android.view.MenuItem;
 
 import timber.log.Timber;
 
 public class SettingsActivity extends PreferenceActivity {
+
+    private static final int REQUEST_READ_CONTACTS = 1;
 
     public static final String PREF_DAYS_LIMIT_KEY = "pref_days_limit";
     public static final String PREF_SHOW_QUICK_CONTACT = "pref_show_quickcontact";
@@ -63,6 +70,22 @@ public class SettingsActivity extends PreferenceActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressWarnings("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            loadContactGroups();
+        }
+        else {
+            // Fallback (no groups)
+            @SuppressWarnings("deprecation")
+            ListPreference listPreference = (ListPreference) findPreference(PREF_CONTACT_GROUP);
+            listPreference.setEntries(new CharSequence[] { getString(R.string.pref_no_contact_group_selected) });
+            listPreference.setEntryValues(new CharSequence[] { NO_CONTACT_GROUP_SELECTED });
+            bindPreferenceSummaryToValue(listPreference);
+        }
+    }
+
     @SuppressWarnings("deprecation")
     private void setupSimplePreferencesScreen() {
         // In the simplified UI, fragments are not used at all and we instead
@@ -76,6 +99,17 @@ public class SettingsActivity extends PreferenceActivity {
         // to reflect the new value, per the Android Design guidelines.
         bindPreferenceSummaryToValue(findPreference(PREF_DAYS_LIMIT_KEY));
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && checkSelfPermission(permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] { permission.READ_CONTACTS }, REQUEST_READ_CONTACTS);
+        }
+        else {
+            loadContactGroups();
+        }
+    }
+
+    @RequiresPermission(permission.READ_CONTACTS)
+    private void loadContactGroups() {
         // Contact group preference
         Cursor groupCursor = null;
         try {
@@ -98,6 +132,7 @@ public class SettingsActivity extends PreferenceActivity {
                 groupIds[i] = groupCursor.getString(0);
             }
 
+            @SuppressWarnings("deprecation")
             ListPreference listPreference = (ListPreference) findPreference(PREF_CONTACT_GROUP);
             listPreference.setEntries(groupNames);
             listPreference.setEntryValues(groupIds);
@@ -130,7 +165,9 @@ public class SettingsActivity extends PreferenceActivity {
                 // Set the summary to reflect the new value.
                 //noinspection ConstantConditions
                 preference.setSummary(
-                        index >= 0 ? listPreference.getEntries()[index] : null
+                        index >= 0
+                                ? listPreference.getEntries()[index]
+                                : null
                 );
 
             }
