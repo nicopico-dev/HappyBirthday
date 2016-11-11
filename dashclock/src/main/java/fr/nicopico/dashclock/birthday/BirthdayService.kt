@@ -122,18 +122,12 @@ class BirthdayService : DashClockExtension() {
         daysLimit = prefs.getString(SettingsActivity.PREF_DAYS_LIMIT_KEY, "7").toInt()
         showQuickContact = prefs.getBoolean(SettingsActivity.PREF_SHOW_QUICK_CONTACT, true)
         val noGroupId = SettingsActivity.NO_CONTACT_GROUP_SELECTED
-        contactGroupId = try {
-            prefs.getString(SettingsActivity.PREF_CONTACT_GROUP, noGroupId)
-                    .let {
-                        if (it != noGroupId) it
-                        else null
-                    }
-                    ?.toLong()
-        }
-        catch (e: NumberFormatException) {
-            Timber.w(e)
-            null
-        }
+        contactGroupId = prefs.getString(SettingsActivity.PREF_CONTACT_GROUP, noGroupId)
+                .let {
+                    if (it != noGroupId) it
+                    else null
+                }
+                ?.toLong()
 
         val previousDisableLocalizationValue = disableLocalization
         disableLocalization = prefs.getBoolean(SettingsActivity.PREF_DISABLE_LOCALIZATION, false)

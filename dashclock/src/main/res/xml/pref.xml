@@ -29,6 +29,6 @@
     <ListPreference
         android:key="pref_contact_group"
         android:title="@string/pref_contact_group"
-        android:defaultValue="NO_CONTACT_GROUP_SELECTED"/>
+        android:defaultValue="-1"/>
 
 </PreferenceScreen>
