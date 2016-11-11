@@ -23,20 +23,23 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.Uri
 import android.preference.PreferenceManager
+import android.provider.ContactsContract
 import android.provider.ContactsContract.Contacts
 import com.google.android.apps.dashclock.api.DashClockExtension
 import com.google.android.apps.dashclock.api.ExtensionData
 import com.jakewharton.threetenabp.AndroidThreeTen
-import com.tbruyelle.rxpermissions.RxPermissions
 import fr.nicopico.happybirthday.domain.model.Contact
 import fr.nicopico.happybirthday.domain.model.nextBirthdaySorter
+import fr.nicopico.happybirthday.extensions.hasPermissions
 import fr.nicopico.happybirthday.extensions.today
 import fr.nicopico.happybirthday.inject.DataModule
 import org.threeten.bp.LocalDate
+import rx.Observable
 import rx.Subscriber
 import rx.schedulers.Schedulers
 import timber.log.Timber
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class BirthdayService : DashClockExtension() {
 
@@ -51,9 +54,6 @@ class BirthdayService : DashClockExtension() {
     }
     private val prefs: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(applicationContext)
-    }
-    private val rxPermissions by lazy {
-        RxPermissions.getInstance(this)
     }
 
     private var daysLimit: Int = 0
@@ -73,6 +73,7 @@ class BirthdayService : DashClockExtension() {
 
     override fun onInitialize(isReconnect: Boolean) {
         super.onInitialize(isReconnect)
+        addWatchContentUris(arrayOf(ContactsContract.Contacts.CONTENT_URI.toString()))
         updatePreferences()
     }
 
@@ -82,20 +83,24 @@ class BirthdayService : DashClockExtension() {
         }
 
         handleLocalization()
-        val today = today()
-        val contactObs = contactRepository
-                .list(
-                        filter = { it.inDays(today) <= daysLimit },
-                        sorter = nextBirthdaySorter(),
-                        groupId = contactGroupId
-                )
-                .observeOn(Schedulers.trampoline())
-
-        if (rxPermissions.isGranted(READ_CONTACTS)) {
+        if (hasPermissions(READ_CONTACTS)) {
+            val today = today()
+            val contactObs = contactRepository
+                    .list(
+                            filter = { it.inDays(today) <= daysLimit },
+                            sorter = nextBirthdaySorter(),
+                            groupId = contactGroupId
+                    )
+                    .first()
+                    .observeOn(Schedulers.immediate())
             contactObs.subscribe(ContactSubscriber(today))
         }
         else {
             displayMissingPermissionInfo()
+            Observable.timer(5, TimeUnit.SECONDS)
+                    .takeUntil { hasPermissions(READ_CONTACTS) }
+                    .toCompletable()
+                    .subscribe { onUpdateData(UPDATE_REASON_CONTENT_CHANGED) }
         }
     }
 
