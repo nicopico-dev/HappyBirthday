@@ -26,7 +26,7 @@ import fr.nicopico.happybirthday.R
 import fr.nicopico.happybirthday.data.repository.ContactRepository
 import fr.nicopico.happybirthday.domain.model.Contact
 import fr.nicopico.happybirthday.domain.model.nextBirthdaySorter
-import fr.nicopico.happybirthday.extensions.ensurePermission
+import fr.nicopico.happybirthday.extensions.ensurePermissions
 import fr.nicopico.happybirthday.extensions.ifElse
 import fr.nicopico.happybirthday.extensions.toast
 import fr.nicopico.happybirthday.inject.AppComponent
@@ -87,7 +87,7 @@ class MainActivity : BaseActivity() {
 
     private fun loadContacts(delay: Boolean = false) {
         subscription?.unsubscribe()
-        val contactObservable: Observable<List<Contact>> = ensurePermission(READ_CONTACTS) {
+        val contactObservable: Observable<List<Contact>> = ensurePermissions(READ_CONTACTS) {
             contactRepository
                     .list(sorter = nextBirthdaySorter())
                     .ifElse(delay, ifTrue = {

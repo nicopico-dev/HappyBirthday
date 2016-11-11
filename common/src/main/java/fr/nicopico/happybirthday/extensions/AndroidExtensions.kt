@@ -17,22 +17,21 @@
 package fr.nicopico.happybirthday.extensions
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.widget.Toast
 import com.tbruyelle.rxpermissions.RxPermissions
 import rx.Observable
 
 fun String.asUri(): Uri = Uri.parse(this)
 
-fun Cursor.intValue(col: String): Int? = getInt(getColumnIndexOrThrow(col))
 fun Cursor.longValue(col: String): Long? = getLong(getColumnIndexOrThrow(col))
-fun Cursor.floatValue(col: String): Float? = getFloat(getColumnIndexOrThrow(col))
-fun Cursor.doubleValue(col: String): Double? = getDouble(getColumnIndexOrThrow(col))
 fun Cursor.stringValue(col: String): String? = getString(getColumnIndexOrThrow(col))
 
 // FIXME inline does not work with proguard
-fun <T> Context.ensurePermission(vararg permissions: String, action: () -> Observable<T>): Observable<T> {
+fun <T> Context.ensurePermissions(vararg permissions: String, action: () -> Observable<T>): Observable<T> {
     return RxPermissions
             .getInstance(this)
             .request(*permissions)
@@ -42,6 +41,11 @@ fun <T> Context.ensurePermission(vararg permissions: String, action: () -> Obser
                     else -> Observable.empty()
                 }
             }
+}
+
+fun Context.hasPermissions(vararg permissions: String): Boolean {
+    return Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+            || permissions.all { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
 }
 
 fun Context.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {

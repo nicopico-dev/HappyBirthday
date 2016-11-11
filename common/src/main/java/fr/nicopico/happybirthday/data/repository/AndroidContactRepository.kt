@@ -16,7 +16,6 @@
 
 package fr.nicopico.happybirthday.data.repository
 
-import android.Manifest.permission.READ_CONTACTS
 import android.content.Context
 import android.database.Cursor
 import android.provider.ContactsContract.CommonDataKinds.Event
@@ -29,7 +28,6 @@ import com.squareup.sqlbrite.SqlBrite
 import fr.nicopico.happybirthday.domain.model.Birthday
 import fr.nicopico.happybirthday.domain.model.Contact
 import fr.nicopico.happybirthday.extensions.asUri
-import fr.nicopico.happybirthday.extensions.ensurePermission
 import fr.nicopico.happybirthday.extensions.longValue
 import fr.nicopico.happybirthday.extensions.stringValue
 import rx.Observable
