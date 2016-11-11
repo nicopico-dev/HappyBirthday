@@ -10,6 +10,10 @@
     <string name="extension_title">Anniversaire</string>
     <string name="extension_description">Affiche un rappel pour l\'anniversaire de vos contacts</string>
 
+    <!-- Permission -->
+    <string name="permission_error_title">Permission requise</string>
+    <string name="permission_error_body">Cliquer pour autoriser l\'accès aux anniversaires de vos contacts</string>
+
     <!-- Contact information -->
     <string name="single_birthday_title_format">Anniversaire de <xliff:g id="contact_name">%1$s</xliff:g></string>
     <!-- Age of the contact -->

@@ -16,11 +16,9 @@
 
 package fr.nicopico.dashclock.birthday
 
-import android.Manifest
 import android.Manifest.permission.READ_CONTACTS
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.Uri
@@ -84,21 +82,20 @@ class BirthdayService : DashClockExtension() {
         }
 
         handleLocalization()
+        val today = today()
+        val contactObs = contactRepository
+                .list(
+                        filter = { it.inDays(today) <= daysLimit },
+                        sorter = nextBirthdaySorter(),
+                        groupId = contactGroupId
+                )
+                .observeOn(Schedulers.trampoline())
 
         if (rxPermissions.isGranted(READ_CONTACTS)) {
-            val today = today()
-            rxPermissions.ensure(READ_CONTACTS)
-            contactRepository
-                    .list(
-                            filter = { it.inDays(today) <= daysLimit },
-                            sorter = nextBirthdaySorter(),
-                            groupId = contactGroupId
-                    )
-                    .observeOn(Schedulers.trampoline())
-                    .subscribe(ContactSubscriber(today))
+            contactObs.subscribe(ContactSubscriber(today))
         }
         else {
-            // TODO
+            displayMissingPermissionInfo()
         }
     }
 
@@ -150,9 +147,17 @@ class BirthdayService : DashClockExtension() {
         return clickIntent
     }
 
-    private inner class ContactSubscriber(
-            val today: LocalDate
-    ) : Subscriber<List<Contact>>() {
+    private fun displayMissingPermissionInfo() {
+        publishUpdate(ExtensionData()
+                .visible(true)
+                .icon(R.drawable.ic_extension_white)
+                .status(getString(R.string.permission_error_title))
+                .expandedBody(getString(R.string.permission_error_body))
+                .clickIntent(PermissionActivity.createIntent(this))
+        )
+    }
+
+    private inner class ContactSubscriber(val today: LocalDate) : Subscriber<List<Contact>>() {
 
         override fun onNext(contacts: List<Contact>) {
             if (contacts.isEmpty()) {
@@ -202,8 +207,11 @@ class BirthdayService : DashClockExtension() {
             }
         }
 
-        override fun onError(e: Throwable?) {
+        override fun onError(e: Throwable) {
             Timber.e(e, "Unable to retrieve birthdays")
+            if (e is SecurityException) {
+                displayMissingPermissionInfo()
+            }
         }
 
         override fun onCompleted() {

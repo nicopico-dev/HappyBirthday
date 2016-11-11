@@ -101,8 +101,7 @@ public class SettingsActivity extends PreferenceActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && checkSelfPermission(permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            // TODO Add a button to ask for permission
-            // requestPermissions(new String[] { permission.READ_CONTACTS }, REQUEST_READ_CONTACTS);
+            requestPermissions(new String[] { permission.READ_CONTACTS }, REQUEST_READ_CONTACTS);
         }
         else {
             loadContactGroups();

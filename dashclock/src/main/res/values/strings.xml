@@ -8,6 +8,10 @@
     <!-- Displayed in DashClock Settings -->
     <string name="extension_title">Birthday</string>
     <string name="extension_description">Display a reminder for your contact birthdays</string>
+
+    <!-- Permission -->
+    <string name="permission_error_title">Permission required</string>
+    <string name="permission_error_body">Click to grant access to your contact\'s birthdays</string>
     
     <!-- Contact information -->
     <string name="single_birthday_title_format"><xliff:g id="contact_name">%1$s</xliff:g>\'s birthday</string>
