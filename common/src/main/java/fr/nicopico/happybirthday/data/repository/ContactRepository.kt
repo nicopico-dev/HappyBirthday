@@ -16,11 +16,14 @@
 
 package fr.nicopico.happybirthday.data.repository
 
+import android.Manifest.permission.READ_CONTACTS
+import android.support.annotation.RequiresPermission
 import fr.nicopico.happybirthday.domain.model.Birthday
 import fr.nicopico.happybirthday.domain.model.Contact
 import rx.Observable
 
 interface ContactRepository {
+    @RequiresPermission(READ_CONTACTS)
     fun list(
             groupId: Long? = null,
             filter: (Birthday) -> Boolean = { true },

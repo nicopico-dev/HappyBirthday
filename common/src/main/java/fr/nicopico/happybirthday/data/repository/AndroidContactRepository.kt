@@ -16,7 +16,7 @@
 
 package fr.nicopico.happybirthday.data.repository
 
-import android.Manifest
+import android.Manifest.permission.READ_CONTACTS
 import android.content.Context
 import android.database.Cursor
 import android.provider.ContactsContract.CommonDataKinds.Event
@@ -54,33 +54,31 @@ internal class AndroidContactRepository(
             filter: (Birthday) -> Boolean,
             sorter: (Contact, Contact) -> Int
     ): Observable<List<Contact>> {
-        return context.ensurePermission(Manifest.permission.READ_CONTACTS) {
-            getBirthdayQuery()
-                    .flatMap { query: SqlBrite.Query ->
-                        // Build contacts for each birthday
-                        val contacts = query
-                                .asRows { cursor: Cursor ->
-                                    ContactBirthday(
-                                            contactId = cursor.longValue(Data.CONTACT_ID)!!,
-                                            birthday = cursor.stringValue(Event.START_DATE)?.toBirthday()
-                                    )
-                                }
-                                .filter { it.birthday?.let(filter) ?: false }
-                                .flatMap { getContactInfo(it.contactId, it.birthday!!) }
-
-                        // Filter by groupId if provided
-                        val groupFiltered = when (groupId) {
-                            null -> contacts
-                            else -> getContactIdsInGroup(groupId).flatMap {
-                                contactIdsInGroup ->
-                                contacts.filter { it.id in contactIdsInGroup }
+        return getBirthdayQuery()
+                .flatMap { query: SqlBrite.Query ->
+                    // Build contacts for each birthday
+                    val contacts = query
+                            .asRows { cursor: Cursor ->
+                                ContactBirthday(
+                                        contactId = cursor.longValue(Data.CONTACT_ID)!!,
+                                        birthday = cursor.stringValue(Event.START_DATE)?.toBirthday()
+                                )
                             }
-                        }
+                            .filter { it.birthday?.let(filter) ?: false }
+                            .flatMap { getContactInfo(it.contactId, it.birthday!!) }
 
-                        // Sort the result
-                        groupFiltered.toSortedList(sorter)
+                    // Filter by groupId if provided
+                    val groupFiltered = when (groupId) {
+                        null -> contacts
+                        else -> getContactIdsInGroup(groupId).flatMap {
+                            contactIdsInGroup ->
+                            contacts.filter { it.id in contactIdsInGroup }
+                        }
                     }
-        }
+
+                    // Sort the result
+                    groupFiltered.toSortedList(sorter)
+                }
     }
 
     private fun getBirthdayQuery(contactId: Long? = null): QueryObservable {

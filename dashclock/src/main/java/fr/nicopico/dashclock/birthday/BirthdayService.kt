@@ -16,8 +16,11 @@
 
 package fr.nicopico.dashclock.birthday
 
+import android.Manifest
+import android.Manifest.permission.READ_CONTACTS
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.Uri
@@ -26,6 +29,7 @@ import android.provider.ContactsContract.Contacts
 import com.google.android.apps.dashclock.api.DashClockExtension
 import com.google.android.apps.dashclock.api.ExtensionData
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.tbruyelle.rxpermissions.RxPermissions
 import fr.nicopico.happybirthday.domain.model.Contact
 import fr.nicopico.happybirthday.domain.model.nextBirthdaySorter
 import fr.nicopico.happybirthday.extensions.today
@@ -49,6 +53,9 @@ class BirthdayService : DashClockExtension() {
     }
     private val prefs: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(applicationContext)
+    }
+    private val rxPermissions by lazy {
+        RxPermissions.getInstance(this)
     }
 
     private var daysLimit: Int = 0
@@ -78,15 +85,21 @@ class BirthdayService : DashClockExtension() {
 
         handleLocalization()
 
-        val today = today()
-        contactRepository
-                .list(
-                        filter = { it.inDays(today) <= daysLimit },
-                        sorter = nextBirthdaySorter(),
-                        groupId = contactGroupId
-                )
-                .observeOn(Schedulers.trampoline())
-                .subscribe(ContactSubscriber(today))
+        if (rxPermissions.isGranted(READ_CONTACTS)) {
+            val today = today()
+            rxPermissions.ensure(READ_CONTACTS)
+            contactRepository
+                    .list(
+                            filter = { it.inDays(today) <= daysLimit },
+                            sorter = nextBirthdaySorter(),
+                            groupId = contactGroupId
+                    )
+                    .observeOn(Schedulers.trampoline())
+                    .subscribe(ContactSubscriber(today))
+        }
+        else {
+            // TODO
+        }
     }
 
     @Suppress("DEPRECATION")
