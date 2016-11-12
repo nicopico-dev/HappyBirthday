@@ -19,7 +19,9 @@
 -dontwarn sun.misc.Unsafe
 -dontnote org.apache.http.**
 -dontnote android.net.http.**
+-dontnote kotlin.reflect.jvm.internal.**
 
+-dontnote rx.internal.util.PlatformDependent
 -keepclassmembers class rx.internal.** {
    <fields>;
 }
