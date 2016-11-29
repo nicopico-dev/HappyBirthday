@@ -21,9 +21,18 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
+import android.view.View
 import android.widget.Toast
 import com.tbruyelle.rxpermissions.RxPermissions
 import rx.Observable
+
+fun View.show() {
+    visibility = View.VISIBLE
+}
+
+fun View.hide() {
+    visibility = View.GONE
+}
 
 fun String.asUri(): Uri = Uri.parse(this)
 

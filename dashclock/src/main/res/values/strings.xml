@@ -62,4 +62,8 @@
     <string name="pref_contact_group">Contact group</string>
     <string name="pref_no_contact_group_selected">— All contacts —</string>
 
+    <!-- Permissions -->
+    <string name="permission_explanation"><xliff:g>DashClock Birthday</xliff:g> needs access to your contacts to display their birthdays</string>
+    <string name="permission_btn_grant_permission">Grant permission</string>
+
 </resources>

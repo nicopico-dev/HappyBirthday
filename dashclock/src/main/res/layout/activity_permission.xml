@@ -15,17 +15,42 @@
   ~ limitations under the License.
   -->
 
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:animateLayoutChanges="true"
+    tools:targetApi="M">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/big_cake"
-        android:layout_gravity="center"
         tools:ignore="ContentDescription"/>
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/txtExplanation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/space_medium"
+        android:padding="@dimen/space_small"
+        android:text="@string/permission_explanation"
+        android:textAppearance="?android:textAppearanceSmall"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <Button
+        android:id="@+id/btnGrantPermission"
+        style="?android:attr/buttonBarPositiveButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/permission_btn_grant_permission"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+</LinearLayout>

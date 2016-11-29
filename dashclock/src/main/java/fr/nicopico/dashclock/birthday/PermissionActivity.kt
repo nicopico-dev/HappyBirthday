@@ -24,6 +24,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.widget.TextView
+import fr.nicopico.happybirthday.extensions.show
+import kotlinx.android.synthetic.main.activity_permission.*
 
 @TargetApi(Build.VERSION_CODES.M)
 class PermissionActivity : Activity() {
@@ -38,6 +41,7 @@ class PermissionActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_permission)
+
         if (savedInstanceState == null) {
             if (checkSelfPermission(READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(arrayOf(READ_CONTACTS), REQUEST_READ_CONTACTS)
@@ -46,9 +50,18 @@ class PermissionActivity : Activity() {
                 finish()
             }
         }
+
+        btnGrantPermission.setOnClickListener {
+            requestPermissions(arrayOf(READ_CONTACTS), REQUEST_READ_CONTACTS)
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        finish()
+        if (grantResults.any { it == PackageManager.PERMISSION_DENIED }) {
+            arrayOf(txtExplanation, btnGrantPermission).forEach(TextView::show)
+        }
+        else {
+            finish()
+        }
     }
 }
