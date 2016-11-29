@@ -21,6 +21,7 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
+import android.support.annotation.StringRes
 import android.view.View
 import android.widget.Toast
 import com.tbruyelle.rxpermissions.RxPermissions
@@ -58,5 +59,9 @@ fun Context.hasPermissions(vararg permissions: String): Boolean {
 }
 
 fun Context.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, message, duration).show()
+}
+
+fun Context.toast(@StringRes message: Int, duration: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, message, duration).show()
 }
