@@ -84,6 +84,7 @@ class BirthdayService : DashClockExtension() {
 
         handleLocalization()
         if (hasPermissions(READ_CONTACTS)) {
+            Timber.d("READ_CONTACTS permission granted")
             val today = today()
             val contactObs = contactRepository
                     .list(
@@ -96,6 +97,7 @@ class BirthdayService : DashClockExtension() {
             contactObs.subscribe(ContactSubscriber(today))
         }
         else {
+            Timber.d("READ_CONTACTS permission denied !")
             displayMissingPermissionInfo()
             Observable.timer(5, TimeUnit.SECONDS)
                     .takeUntil { hasPermissions(READ_CONTACTS) }
