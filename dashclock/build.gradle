@@ -14,8 +14,8 @@ android {
         applicationId 'fr.nicopico.dashclock.birthday'
         minSdkVersion sdk.minSdk
         targetSdkVersion sdk.targetSdk
-        versionCode 13
-        versionName '1.6.2'
+        versionCode 14
+        versionName '1.6.3'
 
         buildConfigField 'String', 'DEFAULT_LANG', '"en"'
     }
