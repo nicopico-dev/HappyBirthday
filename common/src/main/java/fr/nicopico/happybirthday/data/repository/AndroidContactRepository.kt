@@ -32,6 +32,7 @@ import fr.nicopico.happybirthday.extensions.longValue
 import fr.nicopico.happybirthday.extensions.stringValue
 import rx.Observable
 import rx.schedulers.Schedulers
+import timber.log.Timber
 
 internal class AndroidContactRepository(
         private val context: Context,
@@ -148,16 +149,22 @@ internal class AndroidContactRepository(
 
 private val regexDate = Regex("(\\d{4}|-)-(\\d{2})-(\\d{2})", RegexOption.COMMENTS)
 
-private fun String.toBirthday(): Birthday {
-    val matchResult = regexDate.matchEntire(this)
-    val (yearS, monthS, dayS) = matchResult!!.destructured
+private fun String.toBirthday(): Birthday? {
+    try {
+        val matchResult = regexDate.matchEntire(this)
+        val (yearS, monthS, dayS) = matchResult!!.destructured
 
-    val day = dayS.toInt()
-    val month = monthS.toInt()
-    val year: Int? = when (yearS) {
-        "-" -> null
-        else -> yearS.toInt()
+        val day = dayS.toInt()
+        val month = monthS.toInt()
+        val year: Int? = when (yearS) {
+            "-" -> null
+            else -> yearS.toInt()
+        }
+
+        return Birthday(year, month, day)
     }
-
-    return Birthday(year, month, day)
+    catch(e: Exception) {
+        Timber.e(e, "Unable to convert %s to a birthday", this)
+        return null
+    }
 }
