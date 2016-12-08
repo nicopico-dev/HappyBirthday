@@ -36,8 +36,18 @@ android {
             signingConfig signingConfigs.release
         }
 
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix 'DEBUG'
+            resValue 'string', 'app_name_debug', 'DashClock Birthday DEBUG'
+        }
+
         proguard {
             initWith debug
+            applicationIdSuffix '.proguard'
+            versionNameSuffix 'PROGUARD'
+            resValue 'string', 'app_name_debug', 'DashClock Birthday PROGUARD'
+
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -45,6 +55,13 @@ android {
 
     lintOptions {
         warning 'MissingTranslation'
+    }
+
+    sourceSets {
+        proguard {
+            manifest.srcFile 'src/debug/AndroidManifest.xml'
+            res.srcDir 'src/debug/res'
+        }
     }
 }
 
