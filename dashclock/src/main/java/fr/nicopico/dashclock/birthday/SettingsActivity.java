@@ -18,9 +18,11 @@ package fr.nicopico.dashclock.birthday;
 
 import android.Manifest.permission;
 import android.app.ActionBar;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -31,6 +33,7 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.view.MenuItem;
+import android.view.View;
 
 import timber.log.Timber;
 
@@ -47,11 +50,24 @@ public class SettingsActivity extends PreferenceActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setIcon(R.drawable.ic_extension_white);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        setContentView(R.layout.activity_settings);
+        findViewById(R.id.txtPrivacyPolicy).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Open Privacy Policy page in the browser
+                final String privacyPolicyUrl = getString(R.string.url_privacy_policy);
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(privacyPolicyUrl));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

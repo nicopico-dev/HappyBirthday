@@ -67,4 +67,6 @@
     <string name="permission_btn_grant_permission">Grant permission</string>
     <string name="permission_error_unable_to_grant">Unable to grant permission</string>
 
+    <string name="privacy_policy">Privacy Policy</string>
+
 </resources>
