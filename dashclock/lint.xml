@@ -10,4 +10,5 @@
         <ignore regexp="res/layout/activity_permission.xml"/>
         <ignore regexp="res/drawable-(\w+)/big_cake.png"/>
     </issue>
+    <issue id="AllowBackup" severity="ignore"/>
 </lint>
