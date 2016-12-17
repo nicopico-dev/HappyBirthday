@@ -150,9 +150,14 @@ internal class AndroidContactRepository(
 private val regexDate = Regex("(\\d{4}|-)-(\\d{2})-(\\d{2})", RegexOption.COMMENTS)
 
 private fun String.toBirthday(): Birthday? {
+    val matchResult = regexDate.matchEntire(this)
+    if (matchResult == null) {
+        Timber.e("Unable to convert %s to a birthday", this)
+        return null
+    }
+
     try {
-        val matchResult = regexDate.matchEntire(this)
-        val (yearS, monthS, dayS) = matchResult!!.destructured
+        val (yearS, monthS, dayS) = matchResult.destructured
 
         val day = dayS.toInt()
         val month = monthS.toInt()
